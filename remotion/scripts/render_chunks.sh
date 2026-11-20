@@ -2,7 +2,7 @@
 # Render PisaShort in chunks (CPU WebGL), skipping chunks already done. Log: out/pisa/final/render.log
 cd "$(dirname "$0")/.."
 CH=/opt/pw-browsers/chromium-1243/chrome-linux64/chrome
-TOTAL=2130; STEP=270
+TOTAL=2130; STEP=90
 for ((a=0; a<TOTAL; a+=STEP)); do
   b=$((a+STEP-1)); [ $b -ge $TOTAL ] && b=$((TOTAL-1))
   out=out/pisa/final/chunk_$(printf %04d $a).mp4
