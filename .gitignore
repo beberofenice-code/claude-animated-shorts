@@ -1,2 +1,5 @@
 projects/pisa/audio/__pycache__
 projects/pisa/audio/_cache
+projects/pisa/audio/stem_*.wav
+projects/pisa/voice/*.mp3
+projects/pisa/voice/voice_raw.wav
