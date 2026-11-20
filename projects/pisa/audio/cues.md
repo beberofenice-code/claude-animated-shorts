@@ -1,7 +1,7 @@
 # Pisa short sound cues
 
 Length 71.000 s, 48 kHz stereo. Voice -22.3 LUFS before master gain.
-Mix integrated -15.11 LUFS, true peak nan dBTP.
+Mix integrated -15.11 LUFS, true peak -1.16 dBTP.
 
 | t (s) | frame | event | gain dB |
 |---|---|---|---|
