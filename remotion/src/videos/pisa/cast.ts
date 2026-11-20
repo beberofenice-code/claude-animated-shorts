@@ -131,7 +131,7 @@ const MEDIEVAL = [0, 1, 2, 3, 4, 5].map((v): Outfit => {
   return v % 2 ? { ...o, hat: "bonnet", dress: ["#d9a441", "#c25a7a", "#5a8fc2"][v % 3] } : { ...o, hat: v % 4 ? "cap" : "hair", cap: "#6a3a5a", hair: "#4a3020" };
 });
 /** 1934: the official (stout, black uniform, bare head) and the workers (blue overalls, flat caps) */
-const OFFICIAL: Outfit = { jacket: "#2a2830", pants: "#3a3842", boots: INK, buttons: "#e8c45a", sash: "#3a6a9a", build: "stout", skin: SKINS[1], hat: null };
+const OFFICIAL: Outfit = { jacket: "#2a2830", pants: "#3a3842", boots: INK, buttons: "#e8c45a", build: "stout", skin: SKINS[1], hat: null };
 const WORKER = [0, 1, 2].map((v): Outfit => ({ jacket: "#45618a", pants: "#3a4a66", boots: "#3a2a20", hat: "cap", cap: "#5a5a62", skin: sk(v + 1) }));
 /** 1990-2001 engineers: orange jackets, yellow hard hats */
 const ENGINEER = [0, 1, 2].map((v): Outfit => ({ jacket: ["#e87a2c", "#e0a030", "#e87a2c"][v], pants: "#3b4a6a", boots: "#3a2a20", hat: "hardhat", skin: sk(v + 2), moustache: v === 1 ? "#4a3426" : undefined }));
@@ -248,7 +248,7 @@ const FRONT = { side: false, mirror: false };
 const stand = (e: Env, i: number, o: Outfit, okey: string, x: number, y: number, z: number, fo: FrontOpts, scale = 1) => {
   const blink = fo.expr === "whistle" ? 0 : lidAt(e.t, i, SWAPS[e.id]);
   e.out.places.push(person(e.cam, { i, o, okey }, x, y, z, FRONT, { mode: "stand", blink, ...fo }, {}, scale));
-  if (fo.mode !== "sit") blob(e.out, x, y, z, scale);
+  if (fo.mode !== "sit") blob(e.out, x, Math.max(y, 0), z, scale);
 };
 /** side view (walking along dx, or pushing toward dx) */
 const sideP = (e: Env, i: number, o: Outfit, okey: string, x: number, y: number, z: number, dx: number, so: SideOpts, scale = 1) => {
@@ -330,7 +330,7 @@ const warColumn = (e: Env) => {
   const t0 = 21.3, sp = 1.6;
   for (let i = 0; i < 24; i++) {
     const row = Math.floor(i / 3), file = i % 3;
-    const x = -10 + sp * (e.t - t0) - row * 1.35 + hh(i) * 0.15, z = 15.5 + file * 1.15 + hh(i, 2) * 0.1;
+    const x = -3 + sp * (e.t - t0) - row * 1.35 + hh(i) * 0.15, z = 15.5 + file * 1.15 + hh(i, 2) * 0.1;
     const ph = q(((e.t - t0) % 1 + 1) % 1, 60);
     sideP(e, 300 + i, PIKE[i % 4], `p${i % 4}`, x, D0, z, 1, { mode: "march", phase: ph, expr: i % 4 ? "stern" : "neutral", stomp: 1 });
   }
@@ -346,10 +346,10 @@ const warColumn = (e: Env) => {
 /** shot 9: water beads squeezing out of the clay at the foot of the tower */
 const claySweat = (e: Env) => {
   for (let i = 0; i < 9; i++) {
-    const a = -0.6 + i * 0.16, r = 7.9 + hh(i, 3) * 0.6, x = Math.cos(a) * r, z = Math.sin(a) * r + 2.5;
+    const a = 0.25 + i * 0.12, r = 7.7 + hh(i, 3) * 1.2, x = Math.cos(a) * r, z = Math.sin(a) * r;
     const u = ((e.t * 0.8 + hh(i, 4)) % 1);
     const s = q(Math.sin(Math.PI * Math.min(1, u * 1.4)), 20);
-    if (s > 0.05) e.out.fx.push({ key: `drop${s}`, cw: 200, ch: 260, draw: (p) => drop(p), x, y: 0.12 + 0.25 * u, z, w: 0.22 * s, h: 0.28 * s });
+    if (s > 0.05) e.out.fx.push({ key: `drop${s}`, cw: 200, ch: 260, draw: (p) => drop(p), x, y: 0.1 + 0.35 * u, z, w: 0.34 * s, h: 0.44 * s });
     e.out.fx.push({ key: `ring${q(u, 30)}`, cw: 600, ch: 600, draw: (p) => fxRing(p, q(u, 30)), x, y: 0.03, z, w: 0.9, h: 0.9, flat: true });
   }
 };

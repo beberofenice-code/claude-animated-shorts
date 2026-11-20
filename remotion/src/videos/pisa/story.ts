@@ -126,17 +126,17 @@ const bx = (x: number, y: number, z: number): V3 => [BEACH[0] + x, BEACH[1] + y,
 
 /** where the people stand (shared with cast.ts) */
 export const SPOT = {
-  tourists: [[3.6, 46], [0.4, 50.5], [8.7, 45.5], [12.6, 50.2], [-2.6, 44], [6.4, 41]] as [number, number][],
+  tourists: [[4.3, 46], [1.6, 51], [7.7, 46.6], [10.8, 51.4], [3.4, 40.5], [-1.5, 47.5]] as [number, number][],
   builders: [[-4.6, 11.8], [-1.4, 13.1], [2.3, 12.2], [5.4, 13.6], [-7.6, 14.6]] as [number, number][],
   official: [-6.2, 17.5] as [number, number],
   mixer: [-14, 11] as [number, number],
-  rig: [-15.5, -1.5] as [number, number],
+  rig: [-14.5, 0.5] as [number, number],
   kid: [0, -1.6] as [number, number], // beach, relative to BEACH
 };
 
 // shot 1 (hook, today): low wide past the posing tourists, then closer on "only still standing"
 const S1a = (f: number) => zoom([8, 1.6, 62], [1.5, 19, 0], 50, pushK(f, 0, 0.0025));
-const S1b = (f: number) => zoom([7.4, 1.6, 59], [3.2, 9, 30], 44, pushK(f, 58, 0.003), { roll: -0.04 });
+const S1b = (f: number) => zoom([8, 1.6, 62], [5.4, 7.5, 30], 32, pushK(f, 58, 0.003), { roll: -0.04 });
 // shot 2 (1173): aerial over the empty site, then down to the cheering crowd on "fanciest"
 const S2a = (f: number) => zoom([46, 34, 70], [0, 4, 0], 46, pushK(f, 126, 0.002));
 const S2b = (f: number) => zoom([38, 22, 52], [0, 2, 6], 42, pushK(f, 190, 0.0018, 0.005, 30));
@@ -161,7 +161,7 @@ const S8a = (f: number) => zoom([-14, 6, 58], [2, 9, 0], 42, pushK(f, 714, 0.001
 const S8b = (f: number) => zoom([-14, 6, 58], [2, 9, 0], 42, pushK(f, 760, 0.0016, 0.005, 30));
 const S8c = (f: number) => dolly([14, 1.2, 22], [3, 3, 2], pushK(f, 822, 0.003), { fov: 40, roll: 0.04 });
 // shot 9: the wet clay at the foot of the tower (water beads squeezing out)
-const S9a = (f: number) => dolly([10.5, 0.9, 12.5], [6.8, 0.1, 6.2], pushK(f, 852, 0.003), { fov: 40 });
+const S9a = (f: number) => dolly([10.2, 0.75, 7.6], [7.0, 0.35, 3.2], pushK(f, 852, 0.003), { fov: 40 });
 // shot 10: the beach kid; closer and lower on "sink"; down at the feet on "the water squeezes out"; back up on "holds you"
 const S10a = (f: number) => dolly(bx(1.3, 1.5, 6.2), bx(0, 1.15, -1.6), pushK(f, 906, 0.0025), { fov: 40 });
 const S10b = (f: number) => dolly(bx(0.8, 0.75, 3.4), bx(0, 0.35, -1.6), pushK(f, 975, 0.0025), { fov: 38, roll: -0.035 });
@@ -176,19 +176,19 @@ const S13a = (f: number) => zoom([0, 4, 100], [0, 28, 0], 40, pushK(f, 1284, 0.0
 const S13b = (f: number) => dolly([-2.6, 1.8, 20.5], [-1.4, 2.4, 13.1], pushK(f, 1352, 0.0025, 0.006, 30), { fov: 40, roll: -0.04 });
 // shot 14 (1934): the official points; the concrete pump; the lurch
 const S14a = (f: number) => dolly([-3.2, 1.75, 23.5], [-6.2, 1.85, 17.5], pushK(f, 1380, 0.0025), { fov: 40 });
-const S14b = (f: number) => dolly([-4, 3.0, 32], [-9, 2.5, 8], pushK(f, 1470, 0.0022), { fov: 44, roll: 0.03 });
+const S14b = (f: number) => dolly([-17, 2.0, 23], [-10.5, 1.6, 8.5], pushK(f, 1470, 0.0022), { fov: 46, roll: 0.03 });
 const S14c = (f: number) => zoom([10, 3.5, 92], [1, 26, 0], 44, pushK(f, 1540, 0.002));
 // shot 15 (1990): the fenced tower; the drill rig on the high side; the tower easing back
 const S15a = (f: number) => zoom([16, 3.0, 70], [0, 20, 0], 42, pushK(f, 1584, 0.002));
-const S15b = (f: number) => dolly([-9, 2.4, 13], [-15.5, 2.0, -1.5], pushK(f, 1688, 0.0025), { fov: 42, roll: -0.03 });
-const S15c = (f: number) => dolly([-12, 1.4, 8.5], [-16, 0.9, -0.5], pushK(f, 1748, 0.003), { fov: 38, roll: 0.03 });
+const S15b = (f: number) => dolly([-8.5, 2.2, 12.5], [-14.5, 1.8, -0.5], pushK(f, 1688, 0.0025), { fov: 44, roll: -0.03 });
+const S15c = (f: number) => dolly([-9.0, 1.2, 4.6], [-14.4, 1.0, 0.0], pushK(f, 1748, 0.003), { fov: 42, roll: 0.03 });
 const S15d = (f: number) => zoom([0, 4, 100], [0, 27, 0], 40, pushK(f, 1818, 0.002));
 // shot 16 (2001): the engineer at the rig could go on... and switches it off
-const S16a = (f: number) => dolly([-9.5, 1.9, 9.5], [-14.6, 1.7, 1.2], pushK(f, 1872, 0.0025), { fov: 40 });
-const S16b = (f: number) => dolly([-11.2, 1.8, 6.4], [-14.6, 1.75, 1.2], pushK(f, 1952, 0.003, 0.006, 30), { fov: 38, roll: 0.04 });
+const S16a = (f: number) => dolly([-10.2, 1.8, 8.6], [-14.2, 1.7, 1.1], pushK(f, 1872, 0.0025), { fov: 42 });
+const S16b = (f: number) => dolly([-11.6, 1.75, 5.6], [-14.2, 1.75, 1.1], pushK(f, 1952, 0.003, 0.006, 30), { fov: 38, roll: 0.04 });
 // shot 17 (golden, today): tourists pushing the tower; crane up and out to the end
 const S17a = (f: number) => zoom([8, 1.6, 62], [1.8, 18, 0], 50, pushK(f, 1992, 0.0025));
-const CRANE: V3[] = [[16, 18, 84], [30, 34, 118], [0, 22, 0]];
+const CRANE: V3[] = [[14, 10, 80], [22, 12, 104], [0, 25, 0]];
 const S17b = (f: number): Shot => {
   const a = S17a(2050), s = glide((f - 2050) / 70), r = 1 - s, [C, Bz, L] = CRANE;
   return { pos: [0, 1, 2].map((i) => r * r * a.pos[i] + 2 * s * r * C[i] + s * s * Bz[i]) as V3,
@@ -239,7 +239,7 @@ export const camAt = (id: number, f: number): Cam => {
 // ---------------- lens ----------------
 export type Dof = { f: number; dur?: number; cInf: number; focus?: (f: number) => V3 };
 export const DOF: Dof[] = [
-  { f: 0, cInf: 0 }, { f: 58, dur: 30, cInf: 12 }, // hook: wide sharp, then MS on the tourists
+  { f: 0, cInf: 6, focus: () => [6, 1.5, 46] }, { f: 58, dur: 30, cInf: 12, focus: () => [6, 1.6, 46] }, // hook: wide sharp, then MS on the tourists
   { f: 126, cInf: 0 }, { f: F(B.fanciest), cInf: 11 }, // aerial sharp, crowd MS
   { f: 288, cInf: 0 }, { f: F(B.soft) - 2, cInf: 13 }, // pit, builder CU in the mud
   { f: 405, cInf: 0 }, { f: F(B.perfect1) - 4, cInf: 12 }, { f: 462, cInf: 0 }, { f: F(B.perfect2) - 8, cInf: 12 },
@@ -254,7 +254,7 @@ export const DOF: Dof[] = [
   { f: 1380, cInf: 12 }, { f: 1470, cInf: 8 }, { f: 1540, cInf: 0 },
   { f: 1584, cInf: 0 }, { f: 1688, cInf: 10 }, { f: 1748, cInf: 13 }, { f: 1818, cInf: 0 },
   { f: 1872, cInf: 12 },
-  { f: 1992, cInf: 12 }, { f: 2050, dur: 40, cInf: 0 },
+  { f: 1992, cInf: 8, focus: () => [6, 1.5, 46] }, { f: 2050, dur: 40, cInf: 0 },
 ];
 export const dofAt = (f: number) => {
   let i = 0; while (i + 1 < DOF.length && f >= DOF[i + 1].f) i++;

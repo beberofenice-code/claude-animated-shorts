@@ -5,7 +5,7 @@
 import * as THREE from "three";
 import { Batch, boxGeo, V, lam, Kit, Ray, kitClone, prop, house, withSight, roofOf } from "./build";
 import { rep, ctex, stoneHD, grassHD, cobbleHD, waterNear, waterFar, cloudHD, beam } from "./paint";
-import { duomoWall, sandHD, earthHD, hazard } from "./pisapaint";
+import { duomoWall, sandHD, earthHD, hazard, clayHD } from "./pisapaint";
 import { LIGHTS, LOOK, LightPreset } from "./lights";
 import { TONE, CHAR, LFB, untone } from "./shade";
 import { NOINK } from "./ink";
@@ -30,7 +30,7 @@ const haloTex = () => ctex("sunHalo", 256, 256, (g) => {
   g.putImageData(im, 0, 0);
 });
 /** per-shot sun override (degrees, camera-relative); golden shots are backlit low */
-const SUN_SHOT: Record<number, { az?: number; el?: number }> = { 8: { az: 20, el: 9 }, 11: { az: -25, el: 10 }, 17: { az: 30, el: 9 }, 10: { az: 110, el: 40 } };
+const SUN_SHOT: Record<number, { az?: number; el?: number }> = { 8: { az: 62, el: 13 }, 11: { az: -62, el: 13 }, 17: { az: 66, el: 14 }, 10: { az: 110, el: 40 } };
 
 /** every lens position of the film looking at its subject (houses / trees there are left out) */
 const sightLines = (): Ray[] => {
@@ -95,7 +95,7 @@ export class World {
   private tower = new Tower();
   private eras: Record<string, THREE.Group> = {};
   private pegs = new THREE.Group();
-  private cap: THREE.Mesh;
+  private cap: THREE.Mesh; private mud: THREE.Mesh;
   private paths = new THREE.Group();
   private spoil: THREE.Mesh; private barrier: THREE.Group; private drum: THREE.Mesh; private drill: THREE.Group;
   private frustum = new THREE.Frustum();
@@ -141,7 +141,7 @@ export class World {
     }
 
     // ---- ground: the Piazza lawn with the foundation hole, the beach far east ----
-    const grassM = lam("lawnHD", () => ({ map: grassHD(), color: "#c8d6b4" }));
+    const grassM = lam("lawnHD", () => ({ map: grassHD() }));
     const shape = new THREE.Shape([new THREE.Vector2(-900, -900), new THREE.Vector2(1100, -900), new THREE.Vector2(1100, 900), new THREE.Vector2(-900, 900)]);
     const hole = new THREE.Path(); hole.absarc(0, 0, 8.2, 0, Math.PI * 2, true); shape.holes.push(hole);
     const ground = new THREE.ShapeGeometry(shape, 48);
@@ -222,7 +222,7 @@ export class World {
     this.eras.build = mk(["1173", "1272"], (bb) => { stones(bb, -16, 6, 9); stones(bb, 13, -11, 6); stones(bb, 15, 4, 5); cart(bb, 17, 9); });
     // a century of weeds: bushes ringing the stump
     this.eras.weeds = mk(["war"], (bb) => {
-      for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2 + 0.2, d = 8.6 + (i % 3) * 0.7; prop(bb, kit, "plant_bush", Math.cos(a) * d, 0, Math.sin(a) * d, 1.2 + (i % 4) * 0.35, i); }
+      for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2 + 0.2, d = 8.6 + (i % 3) * 0.7; if (Math.abs(a - 0.64) < 0.75) continue; prop(bb, kit, "plant_bush", Math.cos(a) * d, 0, Math.sin(a) * d, 1.2 + (i % 4) * 0.35, i); }
       stones(bb, -16, 6, 6); stones(bb, 13, -11, 4);
     });
     // 1934: the concrete mixer and its hose to the foot of the tower
@@ -240,15 +240,15 @@ export class World {
     // 1990-2001: fence, lead counterweights on the high side, the soil-extraction rig, the spoil heap, the barrier
     const [rx, rz] = SPOT.rig;
     this.eras.rescue = mk(["1990"], (bb) => {
-      for (let i = 0; i < 48; i++) {
-        const a = (i / 48) * Math.PI * 2, x = Math.cos(a) * 13, z = Math.sin(a) * 13;
-        if (z > 9 && Math.abs(x) < 4.5) continue; // the gate
+      for (let i = 0; i < 64; i++) {
+        const a = (i / 64) * Math.PI * 2, x = Math.cos(a) * 18, z = Math.sin(a) * 18;
+        if (z > 14 && Math.abs(x) < 4.5) continue; // the gate
         bb.add(new THREE.BoxGeometry(0.1, 1.6, 0.1), iron, new THREE.Matrix4().makeTranslation(x, 0.8, z));
       }
-      for (let i = 0; i < 48; i++) {
-        const a0 = (i / 48) * Math.PI * 2, a1 = ((i + 1) / 48) * Math.PI * 2;
-        const p0 = V(Math.cos(a0) * 13, 0, Math.sin(a0) * 13), p1 = V(Math.cos(a1) * 13, 0, Math.sin(a1) * 13);
-        if (p0.z > 9 && Math.abs(p0.x) < 4.5 || p1.z > 9 && Math.abs(p1.x) < 4.5) continue;
+      for (let i = 0; i < 64; i++) {
+        const a0 = (i / 64) * Math.PI * 2, a1 = ((i + 1) / 64) * Math.PI * 2;
+        const p0 = V(Math.cos(a0) * 18, 0, Math.sin(a0) * 18), p1 = V(Math.cos(a1) * 18, 0, Math.sin(a1) * 18);
+        if (p0.z > 14 && Math.abs(p0.x) < 4.5 || p1.z > 14 && Math.abs(p1.x) < 4.5) continue;
         for (const y of [0.55, 1.45]) {
           const m = new THREE.Matrix4().compose(p0.clone().add(p1).multiplyScalar(0.5).setY(y), new THREE.Quaternion().setFromUnitVectors(V(1, 0, 0), p1.clone().sub(p0).normalize()), V(1, 1, 1));
           bb.add(new THREE.BoxGeometry(p0.distanceTo(p1), 0.07, 0.07), iron, m);
@@ -259,8 +259,14 @@ export class World {
       block(bb, lam("concrete", () => ({ color: "#c9c4b8" })), -9.0, 0, -3.4, -7.0, 0.6, 3.4, 2);
       // rig: tracked base, cabin, drill mast leaning toward the tower foot
       block(bb, iron, rx - 2, 0, rz - 1.4, rx + 2, 0.7, rz + 1.4, 2);
-      block(bb, yellow, rx - 1.6, 0.7, rz - 1.1, rx + 1.0, 2.6, rz + 1.1, 2);
-      block(bb, lam("glass", () => ({ color: "#5d7fa8" })), rx - 1.62, 1.6, rz - 0.8, rx - 1.55, 2.4, rz + 0.8, 2);
+      block(bb, yellow, rx - 1.6, 0.7, rz - 1.1, rx + 0.4, 2.2, rz + 1.1, 2);
+      block(bb, lam("cabRoof", () => ({ color: "#3a3d47" })), rx - 1.7, 2.2, rz - 1.2, rx + 0.5, 2.35, rz + 1.2, 2);
+      const glass = lam("glass", () => ({ color: "#5d7fa8" }));
+      block(bb, glass, rx - 1.4, 1.35, rz + 1.1, rx + 0.2, 2.0, rz + 1.14, 2);
+      block(bb, glass, rx - 1.64, 1.35, rz - 0.8, rx - 1.6, 2.0, rz + 0.8, 2);
+      block(bb, lam("hazardBand", () => ({ map: rep(hazard(), 4, 1) })), rx - 1.62, 0.72, rz - 1.12, rx + 0.42, 0.95, rz + 1.12, 2);
+      block(bb, yellow, rx + 0.4, 0.7, rz - 0.7, rx + 1.9, 1.3, rz + 0.7, 2);
+      bb.add(new THREE.CylinderGeometry(0.07, 0.07, 1.0, 8), iron, new THREE.Matrix4().makeTranslation(rx - 1.2, 2.8, rz - 0.8));
     });
     this.drill = new THREE.Group();
     const mast = new THREE.Mesh(new THREE.BoxGeometry(0.5, 6, 0.5).translate(0, 3, 0), yellow);
@@ -270,13 +276,13 @@ export class World {
     this.drill.position.set(rx + 1.6, 0.7, rz); this.drill.rotation.z = -0.95;
     this.eras.rescue.add(this.drill);
     this.spoil = new THREE.Mesh(new THREE.ConeGeometry(1.8, 1.4, 20).translate(0, 0.7, 0), earth);
-    this.spoil.position.set(rx + 0.5, 0, rz + 3.4); this.spoil.castShadow = this.spoil.receiveShadow = true;
+    this.spoil.position.set(rx - 2.2, 0, rz - 3.6); this.spoil.castShadow = this.spoil.receiveShadow = true;
     this.eras.rescue.add(this.spoil);
     this.barrier = new THREE.Group();
     const arm = new THREE.Mesh(new THREE.BoxGeometry(5.4, 0.16, 0.12).translate(2.7, 0, 0), lam("hazard", () => ({ map: rep(hazard(), 5, 1) })));
     arm.castShadow = true; this.barrier.add(arm);
     const post = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.1, 0.3).translate(0, -0.55, 0), iron); this.barrier.add(post);
-    this.barrier.position.set(-4.3, 1.1, 13.0);
+    this.barrier.position.set(-4.3, 1.1, 17.4);
     this.eras.rescue.add(this.barrier);
     // today: the paved ring and a souvenir stall
     this.eras.today = mk(["today"], (bb) => {
@@ -288,6 +294,9 @@ export class World {
     const paveM = lam("cobbleHD", () => ({ map: cobbleHD() }));
     const pave = new THREE.Mesh(new THREE.RingGeometry(8.25, 12.5, 72).rotateX(-Math.PI / 2).translate(0, 0.012, 0), paveM);
     pave.receiveShadow = true; this.paths.add(pave); R.add(this.paths);
+    // a century of rain: a ring of wet clay round the stump
+    this.mud = new THREE.Mesh(new THREE.RingGeometry(6.9, 12.5, 72, 1).rotateX(-Math.PI / 2).translate(0, 0.014, 0), lam("mud", () => ({ map: rep(clayHD(), 3, 3) })));
+    this.mud.receiveShadow = true; R.add(this.mud);
     // 1173 pegs and string marking the planned circle
     const pegM = lam("peg", () => ({ color: "#a8724a" }));
     for (let i = 0; i < 20; i++) { const a = (i / 20) * Math.PI * 2; const pg = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.7, 0.1).translate(0, 0.35, 0), pegM); pg.position.set(Math.cos(a) * 7.6, 0, Math.sin(a) * 7.6); pg.castShadow = true; this.pegs.add(pg); }
@@ -374,8 +383,8 @@ export class World {
     const K = LOOK[s.light], sunDir = this.shotSun(id, s, L);
     this.hemi.color.set(L.sky); this.hemi.groundColor.set(L.ground); this.hemi.intensity = L.hemiI;
     this.sun.color.set(L.sunCol); this.sun.intensity = L.sunI;
-    let Rr = THREE.MathUtils.clamp(dist * 1.0 + 10, 14, 80);
-    if (s.light === "golden") Rr = Math.max(Rr, 40);
+    let Rr = THREE.MathUtils.clamp(dist * 1.0 + 10, 14, 150);
+    if (s.light === "golden") Rr = Math.max(Rr, 50);
     this.sun.position.copy(focus).addScaledVector(sunDir, 260); this.sun.target.position.copy(focus);
     const sc = this.sun.shadow.camera;
     sc.left = -Rr; sc.right = Rr; sc.top = Rr; sc.bottom = -Rr; sc.near = 20; sc.far = 560; sc.updateProjectionMatrix();
@@ -418,11 +427,12 @@ export class World {
     this.tower.pose(ts, id === 3);
     this.tower.root.visible = s.era !== "beach";
     this.pegs.visible = id === 2;
+    this.mud.visible = s.era === "war";
     this.cap.visible = id !== 3 && ts.floors[0] < 0.001;
     this.paths.visible = s.era === "1934" || s.era === "1990" || s.era === "today";
     for (const g of Object.values(this.eras)) g.visible = (g.userData.eras as Era[]).includes(s.era);
     this.drum.rotation.y = t * 2.2;
-    this.spoil.scale.setScalar(0.4 + 0.6 * smooth((t - B.pulling + 1.5) / 3) + (id === 16 ? 0.25 : 0));
+    this.spoil.scale.setScalar(0.4 + 0.6 * smooth((t - B.pulling + 1.5) / 3) + (id === 16 ? 0.15 : 0));
     this.barrier.rotation.z = id === 15 ? Math.PI / 2 * (1 - smooth((t - B.closed + 0.25) / 0.25)) : 0;
     this.drill.children[1].position.y = id === 15 ? -1.0 * smooth((t - B.pulling) / 2) - 0.4 * Math.sin(t * 9) * (t > B.pulling ? 0.1 : 0) : 0;
     // ---- cast + effects ----
