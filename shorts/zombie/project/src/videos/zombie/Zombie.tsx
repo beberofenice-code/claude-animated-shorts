@@ -111,6 +111,7 @@ export const ZombieShort: React.FC = () => {
     <AbsoluteFill style={{ background: "#cfe3f2" }}>
       {layersAt(f).map((l, i) => <ShotView key={i ? "over" : "base"} id={l.id} kit={kit} alpha={l.alpha} />)}
       {flash > 0 && <AbsoluteFill style={{ background: "#ffffff", opacity: flash }} />}
+      {f >= 1734 && f < 1772 && <AbsoluteFill style={{ background: "#3a4660", opacity: Math.min(0.42, (f - 1733) * 0.1), mixBlendMode: "multiply" }} />}
       {blackoutAt(f) > 0 && <AbsoluteFill style={{ background: "#05060c", opacity: blackoutAt(f) }} />}
     </AbsoluteFill>
   );

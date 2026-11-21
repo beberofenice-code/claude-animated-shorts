@@ -369,6 +369,9 @@ export class World {
     this.flood.position.set(K, -0.05, 0); this.flood.visible = false; R.add(this.flood);
 
     b.build(R);
+    const ceil = new Batch(), cm = lam("ceiling", () => ({ color: "#f2ede2", side: THREE.DoubleSide }));
+    for (const [cx, w2, h2] of [[OFFICE, 7, 3.2], [CDC, 7.4, 3.3]] as const) ceil.add(quadUp(cx - w2 / 2 - 0.2, cx + w2 / 2 + 0.2, -4.2, 4, 2, h2), cm);
+    ceil.build(R, false);
     for (const fg of FOREGROUND) {
       const o = kitClone(kit, fg.kit, fg.s ?? 1);
       if (!o) continue;

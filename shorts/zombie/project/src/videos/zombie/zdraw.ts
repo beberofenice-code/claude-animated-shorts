@@ -34,8 +34,6 @@ export const chicken = (p: Pen, o: { blink?: number; beak?: number; tilt?: numbe
   const head: P2[] = [];
   for (let i = 0; i < 40; i++) { const a = (i / 40) * Math.PI * 2; head.push([hx + 58 * Math.cos(a), hy + 62 * Math.sin(a)]); }
   p.shadedFill(head, "#f4f1e8", "#d4d0de", rad(-120), 60);
-  p.stroke([[340, by - 28], [372, by - 112]], 6, INK);
-  p.stroke([[421, by - 112], [425, by - 18]], 6, INK);
   p.inkRing(head, 6, 0.6);
   // comb + wattle
   p.poly([[355, hy - 52], [362, hy - 92], [385, hy - 62], [398, hy - 102], [412, hy - 62], [432, hy - 88], [440, hy - 46]], "#e2453c", 5);
@@ -72,10 +70,13 @@ export const satellite = (p: Pen, spin = 0) => {
 
 /** backpack (cw 400 x ch 460) */
 export const backpack = (p: Pen, col = "#d9572e") => {
-  p.poly([[90, 120], [310, 120], [340, 440], [60, 440]], col, 8);
-  p.poly([[110, 260], [290, 260], [300, 400], [100, 400]], shade(col, 0.85), 6);
-  p.arc(200, 120, 70, 70, 180, 360, 14, shade(col, 0.6));
-  p.poly([[80, 120], [320, 120], [300, 190], [100, 190]], shade(col, 0.75), 7);
+  p.arc(200, 110, 60, 60, 180, 360, 16, shade(col, 0.6));
+  const body: [number, number][] = [];
+  for (let i = 0; i <= 24; i++) { const a = Math.PI + (i / 24) * Math.PI; body.push([200 + 125 * Math.cos(a), 170 + 70 * Math.sin(a)]); }
+  p.poly([...body, [335, 440], [65, 440]], col, 8);
+  p.poly([[110, 270], [290, 270], [295, 410], [105, 410]], shade(col, 0.85), 6);
+  p.stroke([[110, 300], [290, 300]], 5);
+  for (const x of [140, 260]) { p.band([[x, 120], [x, 285]], shade(col, 0.6), 18, 4); p.poly([[x - 16, 250], [x + 16, 250], [x + 16, 280], [x - 16, 280]], "#e8e6e0", 4); }
 };
 /** CDC list items (cw = ch = 300), drawn around (150, 150) */
 export const item = (p: Pen, k: "water" | "food" | "flash" | "meds" | "aid") => {
@@ -215,9 +216,17 @@ export const smoke = (p: Pen, t: number) => {
 };
 /** flat cartoon radiation aura: spiky light-green halo with ink, two tones (cw = ch = 600) */
 export const aura = (p: Pen, t: number) => {
-  for (const [r0, r1, col, n] of [[230, 290, "#d8ff8a", 14], [175, 225, "#b6f25a", 12]] as const) {
+  for (const [r0, r1, col, n] of [[215, 270, "#d8ff8a", 14], [165, 212, "#b6f25a", 12]] as const) {
     const pts: [number, number][] = [];
-    for (let i = 0; i < n * 2; i++) { const a = (i / (n * 2)) * Math.PI * 2 + t * 0.6; const r = i % 2 ? r0 : r1 + 14 * Math.sin(t * 7 + i); pts.push([300 + r * Math.cos(a), 300 + r * 1.25 * Math.sin(a)]); }
+    for (let i = 0; i < n * 2; i++) { const a = (i / (n * 2)) * Math.PI * 2 + t * 0.6; const r = i % 2 ? r0 : r1 + 14 * Math.sin(t * 7 + i); pts.push([300 + r * Math.cos(a), 300 + r * Math.sin(a)]); }
     p.poly(pts, col, 6);
+  }
+};
+/** a few leaves flying (cw = ch = 300) */
+export const leaves = (p: Pen, t: number) => {
+  for (let i = 0; i < 6; i++) {
+    const a = i * 1.1 + 0.5, d = 30 + 110 * t;
+    const x = 150 + d * Math.cos(a), y = 150 + d * Math.sin(a) * 0.7 + 60 * t * t;
+    p.ell(x, y, 16, 9, i % 2 ? "#5aa83c" : "#7cc24f", 3, 0, 360, i * 40 + t * 200);
   }
 };

@@ -3,7 +3,7 @@
 // stands where in each shot, with which face, timed to the voice words.
 import * as THREE from "three";
 import { Pen, bodyFront, Outfit, Expr, FrontOpts, SideOpts, bodySide, INK, SKINS, fxBurst, fxPuff, fxStars, fxContact, fxShadow } from "./toon";
-import { chicken, satellite, backpack, item, comic, wind, rain, glow, smoke, aura } from "./zdraw";
+import { chicken, satellite, backpack, item, comic, wind, rain, glow, smoke, aura, leaves } from "./zdraw";
 import { FPS, SHOTS, V3, smooth, clamp01, FIELD, CDC, OFFICE, WAR, CAMP, BASE, BASE_Z, FLOOR2, SAT_LAND, SAT_T, CRASH_T } from "./story";
 import { NOINK } from "./ink";
 import { cardShade, blobMaterial, CARD_K } from "./cardshade";
@@ -260,7 +260,7 @@ const street = (id: number, t: number, cam: CamInfo, out: Stage) => {
   P(out, cam, 1, id === 19 ? YOU_PACK : YOU, 0.15, FLOOR2, -7.45, fo, 1, false);
   if (id === 19 && at(t, 67.8)) {
     const u = smooth((t - 67.7) / 0.35);
-    chick(out, cam, -0.6, 3.72 + 0.9 * (1 - u), -7.32, 0.5, t, 0);
+    chick(out, cam, -0.42, 3.72 + 0.9 * (1 - u), -7.32, 0.5, t, 0);
   }
 };
 
@@ -281,17 +281,18 @@ const field = (id: number, t: number, cam: CamInfo, out: Stage) => {
   // radiation zombie + glow
   const pulse = 0.85 + 0.15 * Math.sin(t * 6);
   const ph = q(t % 2, 15);
-  out.fx.push({ key: `aura${ph}`, cw: 600, ch: 600, draw: (p) => aura(p, ph), x: F, y: 1.15, z: -0.3, w: 1.9 * pulse, h: 1.9 * pulse });
+  out.fx.push({ key: `aura${ph}`, cw: 600, ch: 600, draw: (p) => aura(p, ph), x: F, y: 1.15, z: -0.3, w: 2.4 * pulse, h: 2.4 * pulse });
   P(out, cam, 30, zombie(2, { skin: "#9ee86a", jacket: "#5f8fa8" }), F, 0, 0, { ...shamble(t, 30), mode: "stand", blink: lidAt(t, 30) });
   // evil magic zombie, sparkles
-  P(out, cam, 31, zombie(0, { hat: "wizard", jacket: "#4b3a9a", pants: "#3a2c80" }), F + 4, 0, 0, { ...shamble(t, 31), mode: "stand", expr: at(t, 16.6) ? "grin" : "zombie", blink: lidAt(t, 31) });
+  P(out, cam, 31, zombie(0, { hat: "wizard", jacket: "#4b3a9a", pants: "#3a2c80" }), F + 4, 0, 0, { ...shamble(t, 31), mode: "stand", expr: at(t, 16.6) ? "stern" : "zombie", blink: lidAt(t, 31) });
   for (let k = 0; k < 3; k++) {
     const u = q((t * 1.4 + k / 3) % 1, 30);
     out.fx.push({ key: `stars${u}`, cw: 420, ch: 210, draw: (p) => fxStars(p, u), x: F + 4 + (k - 1) * 0.45, y: 1.5 + 0.5 * u, z: 0.25, w: 0.5, h: 0.25 });
   }
   // vegetarian zombie, chewing the bush on "only eat plants"
   const chew = at(t, 18.98) && Math.floor(t * 6) % 2 === 0;
-  P(out, cam, 32, zombie(3), F + 8.2, 0, 0.2, { mode: "stand", reach: 0.1, facing: 1, expr: at(t, 18.98) ? (chew ? "lick" : "smile_closed") : "zombie", blink: lidAt(t, 32), headTilt: 6 });
+  P(out, cam, 32, zombie(3), F + 8.35, 0, 0.2, { mode: "stand", reach: 0.1, facing: 1, tilt: at(t, 18.7) ? 9 : 3, expr: at(t, 18.98) ? (chew ? "lick" : "smile_closed") : "zombie", blink: lidAt(t, 32), headTilt: 10 });
+  if (at(t, 18.98)) { const u = q(((t - 18.9) * 1.6) % 1, 30); out.fx.push({ key: `leaves${u}`, cw: 300, ch: 300, draw: (p) => leaves(p, u), x: F + 8.75, y: 1.25, z: 0.45, w: 0.9, h: 0.9 }); }
   // satellite zombie
   const hit = t >= SAT_T;
   P(out, cam, 33, zombie(4), F + 12.1, 0, 0.1, { ...shamble(t, 33), mode: "stand", facing: 1,
@@ -314,7 +315,7 @@ const satelliteAt = (t: number, out: Stage) => {
   else if (t < SAT_T) { const u = (t - 22.27) / (SAT_T - 22.27); x = F + 12.4 + 0.5 * u; y = 10.15 - 9.55 * u * u; z = -3 + 3.6 * u; spin = t * 140; }
   else { x = SAT_LAND[0]; y = 0.55; z = SAT_LAND[2]; spin = 22; }
   const s = q(((spin % 360) + 360) % 360, 1);
-  out.fx.push({ key: `sat${s}`, cw: 600, ch: 600, draw: (p) => satellite(p, s), x, y, z, w: 2.0, h: 2.0 });
+  out.fx.push({ key: `sat${s}`, cw: 600, ch: 600, draw: (p) => satellite(p, s), x, y, z, w: t < 22.27 ? 3.6 : 2.2, h: t < 22.27 ? 3.6 : 2.2 });
   if (t >= SAT_T && t < SAT_T + 0.8) {
     const u = q((t - SAT_T) / 0.8, 30);
     out.fx.push({ key: `puff${u}`, cw: 300, ch: 300, draw: (p) => fxPuff(p, u), x, y: 0.5, z: z + 0.3, w: 3.4, h: 3.4, soft: true });
@@ -358,7 +359,7 @@ const cdc = (id: number, t: number, cam: CamInfo, out: Stage) => {
     // readers in front of the wall screen: 3 at first, the room fills from "This time"
     const n = t < 36.02 - LEAD ? 3 : Math.min(26, 3 + Math.floor((t - 35.95) * 22));
     for (let i = 0; i < n; i++) {
-      const row = Math.floor(i / 6), col = i % 6;
+      const row = Math.floor(i / 6), col = (i + 2) % 6;
       const x = C - 2.6 + col * 0.82 + (row % 2) * 0.4 + (hh(i, 3) - 0.5) * 0.25, z = -0.45 + row * 0.75 + (hh(i, 6) - 0.5) * 0.2;
       const pop = i < 3 ? 1 : smooth((t - (35.95 + (i - 3) / 22)) / 0.12);
       P(out, cam, 50 + i, reader(i), x, 0, z, { mode: "stand", prop: i % 3 === 2 ? null : "phone", facing: i % 2 ? 1 : -1,
@@ -374,11 +375,12 @@ const cdc = (id: number, t: number, cam: CamInfo, out: Stage) => {
     const B: V3 = [C + 1.45, 0.76, -1.15];
     out.fx.push({ key: "bag", cw: 400, ch: 460, draw: (p) => backpack(p), x: B[0], y: B[1] + 0.23, z: B[2], w: 0.44, h: 0.5 });
     const drops: [number, "water" | "food" | "flash" | "meds" | "aid"][] = [[52.06, "water"], [52.6, "food"], [53.16, "flash"], [53.84, "meds"], [54.46, "aid"]];
-    for (const [w, k] of drops) {
-      const u = (t - (w - 0.35)) / 0.35;
-      if (u < 0 || u >= 1) continue;
-      out.fx.push({ key: `item${k}`, cw: 300, ch: 300, draw: (p) => item(p, k), x: B[0] + 0.02, y: B[1] + 1.0 - 0.6 * u * u, z: B[2] + 0.05, w: 0.26, h: 0.26, rot: 0.6 * (1 - u) });
-    }
+    drops.forEach(([w, k], j) => {
+      const u = Math.min(1, (t - (w - 0.35)) / 0.35);
+      if (u < 0) return;
+      const rest = 0.64 + 0.03 * j;
+      out.fx.push({ key: `item${k}`, cw: 300, ch: 300, draw: (p) => item(p, k), x: B[0] - 0.12 + 0.06 * j, y: B[1] + rest + (1.0 - rest) * (1 - u * u), z: B[2] - 0.04 - 0.01 * j, w: 0.24, h: 0.24, rot: (j - 2) * 0.25 + 0.6 * (1 - u) });
+    });
     for (const [w] of drops) if (t >= w && t < w + 0.25) {
       const u = q((t - w) / 0.25, 30);
       out.fx.push({ key: `burst${u}`, cw: 500, ch: 500, draw: (p) => fxBurst(p, u, "#fff3b0", 8, 60, 220), x: B[0], y: B[1] + 0.5, z: B[2] + 0.1, w: 0.5, h: 0.5 });
@@ -386,7 +388,7 @@ const cdc = (id: number, t: number, cam: CamInfo, out: Stage) => {
   }
   if (id === 18) {
     const u = clamp01((t - (62.82 - 0.3)) / 0.3);
-    if (t >= 62.52) out.fx.push({ key: "comic", cw: 300, ch: 400, draw: (p) => comic(p), x: C + 0.3, y: 0.775 + 0.6 * (1 - u * u), z: -1.0, w: 0.3, h: 0.4, flat: u >= 1, rot: 0.3 });
+    if (t >= 62.52) out.fx.push({ key: "comic", cw: 300, ch: 400, draw: (p) => comic(p), x: C + 0.3, y: 0.775 + 0.32 + 0.6 * (1 - u * u), z: -1.0, w: 0.48, h: 0.64, rot: 0.12 * (1 - u) - 0.05 });
     if (t >= 62.82 && t < 63.3) { const v = q((t - 62.82) / 0.48, 30); out.fx.push({ key: `puff${v}`, cw: 300, ch: 300, draw: (p) => fxPuff(p, v), x: C + 0.3, y: 0.85, z: -0.95, w: 0.5, h: 0.5, soft: true }); }
   }
 };
