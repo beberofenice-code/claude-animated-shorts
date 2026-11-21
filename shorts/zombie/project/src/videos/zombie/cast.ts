@@ -3,7 +3,7 @@
 // stands where in each shot, with which face, timed to the voice words.
 import * as THREE from "three";
 import { Pen, bodyFront, Outfit, Expr, FrontOpts, SideOpts, bodySide, INK, SKINS, fxBurst, fxPuff, fxStars, fxContact, fxShadow } from "./toon";
-import { chicken, satellite, backpack, item, comic, wind, rain, glow, smoke } from "./zdraw";
+import { chicken, satellite, backpack, item, comic, wind, rain, glow, smoke, aura } from "./zdraw";
 import { FPS, SHOTS, V3, smooth, clamp01, FIELD, CDC, OFFICE, WAR, CAMP, BASE, BASE_Z, FLOOR2, SAT_LAND, SAT_T, CRASH_T } from "./story";
 import { NOINK } from "./ink";
 import { cardShade, blobMaterial, CARD_K } from "./cardshade";
@@ -280,7 +280,8 @@ const field = (id: number, t: number, cam: CamInfo, out: Stage) => {
   }
   // radiation zombie + glow
   const pulse = 0.85 + 0.15 * Math.sin(t * 6);
-  out.fx.push({ key: `glow${q(pulse, 10)}`, cw: 256, ch: 256, draw: (p) => glow(p.g, pulse), x: F, y: 1.1, z: -0.25, w: 2.4, h: 2.9, soft: true });
+  const ph = q(t % 2, 15);
+  out.fx.push({ key: `aura${ph}`, cw: 600, ch: 600, draw: (p) => aura(p, ph), x: F, y: 1.15, z: -0.3, w: 1.9 * pulse, h: 1.9 * pulse });
   P(out, cam, 30, zombie(2, { skin: "#9ee86a", jacket: "#5f8fa8" }), F, 0, 0, { ...shamble(t, 30), mode: "stand", blink: lidAt(t, 30) });
   // evil magic zombie, sparkles
   P(out, cam, 31, zombie(0, { hat: "wizard", jacket: "#4b3a9a", pants: "#3a2c80" }), F + 4, 0, 0, { ...shamble(t, 31), mode: "stand", expr: at(t, 16.6) ? "grin" : "zombie", blink: lidAt(t, 31) });

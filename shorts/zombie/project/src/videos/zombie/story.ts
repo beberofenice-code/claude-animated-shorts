@@ -40,7 +40,7 @@ export const SHOTS: ShotDef[] = [
   { id: 12, a: 1020, b: 1170, light: "day", set: "cdc", sunAz: 150, sunEl: 45 }, // readers pile in; the site crashes
   { id: 13, a: 1170, b: 1239, light: "day", set: "office", sunAz: 155, sunEl: 38 }, // Luckily: salute
   { id: 14, a: 1239, b: 1317, light: "day", set: "cdc", sunAz: 150, sunEl: 45 },  // Unluckily: smoking monitor
-  { id: 15, a: 1317, b: 1525, light: "golden", set: "war", sunAz: 160, sunEl: 22 }, // You see: map table
+  { id: 15, a: 1317, b: 1525, light: "golden", set: "war", sunAz: 150, sunEl: 48 }, // You see: map table
   { id: 16, a: 1525, b: 1650, light: "day", set: "cdc", sunAz: 150, sunEl: 45 },  // the list drops into the bag
   { id: 17, a: 1650, b: 1785, light: "golden", set: "camp" },                  // camping trip; hurricane, flood, blackout
   { id: 18, a: 1785, b: 1905, light: "day", set: "cdc", sunAz: 150, sunEl: 45 },  // the comic book
@@ -109,8 +109,8 @@ const S5b = (f: number) => dolly([O - 1.3, 1.75, 0.5], [O - 2.15, 1.8, -3.6], pu
 // shots 6-10: the field line-up (one MS per type)
 const S6a = (f: number) => dolly([F + 0.7, 1.45, 4.2], [F, 1.3, 0], pushK(f, 441, 0.003), { fov: 40, roll: -0.03 });
 const S7a = (f: number) => dolly([F + 4.5, 1.4, 3.9], [F + 4.0, 1.45, 0], pushK(f, 488, 0.003), { fov: 40, roll: 0.035 });
-const S8a = (f: number) => dolly([F + 9.9, 1.3, 4.0], [F + 8.3, 1.15, 0.2], pushK(f, 525, 0.0025), { fov: 42 });
-const S8b = (f: number) => dolly([F + 9.0, 1.25, 2.6], [F + 8.2, 1.25, 0.2], pushK(f, 560, 0.0025), { fov: 38, roll: -0.035 });
+const S8a = (f: number) => dolly([F + 10.2, 1.3, 4.2], [F + 8.6, 1.0, 0.1], pushK(f, 525, 0.0025), { fov: 44 });
+const S8b = (f: number) => dolly([F + 9.6, 1.2, 2.9], [F + 8.6, 1.1, 0.1], pushK(f, 560, 0.0025), { fov: 40, roll: -0.035 });
 const S9a = (f: number) => dolly([F + 13.5, 1.0, 6.0], [F + 12.8, 7.5, -3], pushK(f, 600, 0.002), { fov: 46, roll: 0.03 });
 const S9b = (f: number) => dolly([F + 15.6, 1.5, 6.6], [F + 12.8, 1.6, 0.2], pushK(f, 668, 0.0025), { fov: 44 });
 const S10a = (f: number) => dolly([F + 17.2, 0.75, 2.6], [F + 16.0, 0.85, 0], pushK(f, 734, 0.002), { fov: 40 });
@@ -224,6 +224,5 @@ export const dofAt = (f: number) => {
 
 export type Fg = { a: number; b: number; kit: string; pos: V3; s?: number; yaw?: number };
 export const FOREGROUND: Fg[] = [
-  { a: 525, b: 600, kit: "plant_bushDetailed", pos: [F + 9.6, 0, 2.6], s: 0.7, yaw: 1.2 },               // vegetarian: bush front-right
   { a: 1646, b: 1785, kit: "tree_default", pos: [K + 3.6, 0, 4.3], s: 3.4, yaw: 0.2 },                    // camp: a tree on the right edge
 ];

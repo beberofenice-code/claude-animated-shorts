@@ -190,9 +190,9 @@ export const rain = (p: Pen, t: number) => {
   }
 };
 /** green glow behind the radiation zombie (soft card, cw = ch = 256) */
-export const glow = (g: CanvasRenderingContext2D, a = 1) => {
+export const glow = (g: CanvasRenderingContext2D, a = 1, rgb = "255,170,70") => {
   const r = g.createRadialGradient(128, 128, 10, 128, 128, 128);
-  r.addColorStop(0, `rgba(190,255,120,${0.85 * a})`); r.addColorStop(0.5, `rgba(150,255,80,${0.35 * a})`); r.addColorStop(1, "rgba(150,255,80,0)");
+  r.addColorStop(0, `rgba(${rgb},${0.85 * a})`); r.addColorStop(0.5, `rgba(${rgb},${0.35 * a})`); r.addColorStop(1, `rgba(${rgb},0)`);
   g.fillStyle = r; g.fillRect(0, 0, 256, 256);
 };
 /** an open binder lying on the desk (canvas 1024 x 640, seen from above): two pages of zombie sketches */
@@ -211,5 +211,13 @@ export const smoke = (p: Pen, t: number) => {
   for (let i = 0; i < 5; i++) {
     const a = rad(150 + i * 60), d = 30 + 40 * t, r = (40 + 18 * (i % 2)) * (0.6 + 0.6 * t);
     p.ell(150 + d * Math.cos(a), 160 + d * 0.6 * Math.sin(a), r, r * 0.85, `rgba(110,108,120,${(0.85 * (1 - t)).toFixed(3)})`, 0);
+  }
+};
+/** flat cartoon radiation aura: spiky light-green halo with ink, two tones (cw = ch = 600) */
+export const aura = (p: Pen, t: number) => {
+  for (const [r0, r1, col, n] of [[230, 290, "#d8ff8a", 14], [175, 225, "#b6f25a", 12]] as const) {
+    const pts: [number, number][] = [];
+    for (let i = 0; i < n * 2; i++) { const a = (i / (n * 2)) * Math.PI * 2 + t * 0.6; const r = i % 2 ? r0 : r1 + 14 * Math.sin(t * 7 + i); pts.push([300 + r * Math.cos(a), 300 + r * 1.25 * Math.sin(a)]); }
+    p.poly(pts, col, 6);
   }
 };

@@ -162,7 +162,7 @@ export class World {
     this.hemi = new THREE.HemisphereLight("#cfe6ff", "#6c5c8c", 1.1);
     this.sun = new THREE.DirectionalLight("#fff0d6", 2.6);
     this.sun.castShadow = true;
-    this.sun.shadow.mapSize.set(4096, 4096);
+    this.sun.shadow.mapSize.set(2048, 2048);
     R.add(this.hemi, this.sun, this.sun.target);
     this.cloudMaps = { day: [0, 1, 2, 3].map((k) => cloudHD(k, LOOK.day.cloud)), golden: [0, 1, 2, 3].map((k) => cloudHD(k, LOOK.golden.cloud)) };
     for (let i = 0; i < 9; i++) {
@@ -240,6 +240,7 @@ export class World {
     b.add(boxGeo(V(-3.4, 0.12, -6.4), V(-3.3, 1.0, -6.3)), metal);
     b.add(boxGeo(V(-3.6, 1.0, -6.6), V(-3.1, 1.35, -6.1)), lam("mailbox", () => ({ color: "#3f6fb5" })));
 
+    b.build(R);
     // ================= BASE EXTERIOR (x ~ 2000, z ~ 70) =================
     const B = BASE, BZ = BASE_Z;
     b.add(quadUp(B - 300, B + 300, BZ - 200, BZ + 200, 4, 0), grass);
@@ -269,6 +270,7 @@ export class World {
     for (let x = -30; x <= 30; x += 2.5) b.add(boxGeo(V(B + x - 0.05, 0, BZ + 28), V(B + x + 0.05, 1.8, BZ + 28.1)), metal);
     b.add(boxGeo(V(B - 30, 1.6, BZ + 28), V(B + 30, 1.68, BZ + 28.1)), metal);
 
+    b.build(R);
     // ================= OFFICE (x ~ 2000) + WAR ROOM (x ~ 2040) =================
     const ow = lam("officeWall", () => ({ map: plain("officeWall", "#d9cfae", "#c7bd9a", 600) }));
     const ofl = lam("officeFloor", () => ({ map: carpet("officeFloor", "#6f7a5a") }));
@@ -277,8 +279,8 @@ export class World {
     const dtop = lam("deskWood", () => ({ map: rep(beamHD(), 1, 1) }));
     desk(b, OFFICE, -1.2, 2.4, 0.95, dtop, metal);
     // typewriter-ish laptop + papers + mug on the desk
-    b.add(boxGeo(V(OFFICE + 0.45, 0.76, -1.6), V(OFFICE + 0.9, 0.79, -1.32)), dark);
-    b.add(boxGeo(V(OFFICE + 0.45, 0.79, -1.62), V(OFFICE + 0.9, 1.06, -1.59)), dark);
+    b.add(boxGeo(V(OFFICE + 0.8, 0.76, -1.55), V(OFFICE + 1.15, 0.78, -1.3)), dark);
+    b.add(boxGeo(V(OFFICE + 0.8, 0.78, -1.57), V(OFFICE + 1.15, 0.98, -1.55)), dark);
     b.add(boxGeo(V(OFFICE - 0.65, 0.76, -1.3), V(OFFICE - 0.4, 0.775, -1.05)), white);
     b.add(new THREE.CylinderGeometry(0.05, 0.045, 0.11, 14), lam("mug", () => ({ color: "#3f6fb5" })), new THREE.Matrix4().makeTranslation(OFFICE - 0.75, 0.815, -1.0));
     // the open binder (insert) + its turning page
@@ -312,10 +314,9 @@ export class World {
       st.castShadow = hd.castShadow = true;
       R.add(g); this.pins.push({ m: g, k });
     });
-    b.add(new THREE.CylinderGeometry(0.02, 0.02, 1.0, 8), metal, new THREE.Matrix4().makeTranslation(WAR, 2.7, 0));
-    b.add(new THREE.ConeGeometry(0.35, 0.3, 20, 1, true), lam("lampShade", () => ({ color: "#3f6a4a", side: THREE.DoubleSide })), new THREE.Matrix4().makeTranslation(WAR, 2.1, 0));
     for (const x of [WAR - 3.0, WAR + 2.5]) b.add(boxGeo(V(x, 0, -3.95), V(x + 0.5, 1.3, -3.4), 1), lam("cabinet", () => ({ color: "#7d8a6a" })));
 
+    b.build(R);
     // ================= FIELD (x ~ 4000) =================
     const F = FIELD;
     b.add(quadUp(F - 300, F + 300, -300, 300, 4, 0), grass);
@@ -329,6 +330,7 @@ export class World {
     b.add(boxGeo(V(F + 15.72, 0, -0.28), V(F + 16.28, 0.5, 0.28), 1), wood); // the chicken's crate
     b.add(boxGeo(V(F + 15.7, 0.18, 0.28), V(F + 16.3, 0.25, 0.3)), beamM);
 
+    b.build(R);
     // ================= CDC OFFICE (x ~ 6000) =================
     const C = CDC;
     b.add(quadUp(C - 200, C + 200, -200, 200, 4, 0), grass);
@@ -348,6 +350,7 @@ export class World {
     b.add(new THREE.CylinderGeometry(0.16, 0.16, 0.4, 16), lam("cooler", () => ({ color: "#8fd0ff" })), new THREE.Matrix4().makeTranslation(C + 2.6, 1.25, -3.6));
     b.add(boxGeo(V(C + 2.42, 0, -3.78), V(C + 2.78, 1.05, -3.42)), white);
 
+    b.build(R);
     // ================= CAMP (x ~ 8000) =================
     const K = CAMP;
     b.add(quadUp(K - 300, K + 300, -300, 300, 4, 0), grass);
@@ -439,7 +442,7 @@ export class World {
     }
     // ---- set pieces ----
     for (const g of this.fgs) g.o.visible = f >= g.a && f < g.b && g.a < s.b && g.b > s.a;
-    const crashed = t >= CRASH_T && t < 59.5;
+    const crashed = t >= CRASH_T && t < 44;
     for (const sc2 of this.screens) sc2.mat.map = crashed ? this.scr.crash : this.scr.blog;
     // binder page turns (shot 4 insert) and on "Page by page" (shot 5)
     const flips = [10.55, 11.15, 11.75, 12.4, 12.86];
