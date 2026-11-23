@@ -456,7 +456,7 @@ export class World {
       const m = this.clouds[i], mat = m.material as THREE.MeshBasicMaterial;
       m.lookAt(cam.position.x, m.position.y, cam.position.z);
       mat.map = this.cloudMaps[s.light][i % 4];
-      m.visible = E.snow < 0.3;
+      mat.transparent = true; mat.opacity = 1 - THREE.MathUtils.smoothstep(E.snow, 0.05, 0.4); m.visible = mat.opacity > 0.01;
     }
     const W = this.WU, wc = K.water;
     untone(wc.near, W.wNearC.value); untone(wc.mid, W.wMidC.value); untone(wc.far, W.wFarC.value);

@@ -18,7 +18,7 @@ import { InkPass, noInkFallback } from "./ink";
 import { LensBlur, GrainEffect } from "./lensblur";
 import { GradeEffect, GRADES, GRADE_STRENGTH, gradeFor } from "./grade";
 import { Kit } from "./build";
-import { TOTAL, FLASH_AT, SHOTS, layersAt, dofAt } from "./story";
+import { TOTAL, FLASH_AT, SHOTS, layersAt, dofAt, envAt } from "./story";
 
 export const BRIDGE_FRAMES = TOTAL;
 
@@ -75,6 +75,8 @@ const Inner: React.FC<{ id: number; kit: Kit }> = ({ id, kit }) => {
   const cam = camera as THREE.PerspectiveCamera;
   target.copy(world.update(id, f, cam, scene));
   noInkFallback(world.root);
+  // blizzard: world lines dissolve with everything else (characters carry their own lines on their cards)
+  { const sn = envAt(id, f).snow, mu = (fx.ink as unknown as { maskMat?: THREE.ShaderMaterial }).maskMat; if (mu) mu.uniforms.strength.value = 1 - 0.9 * THREE.MathUtils.smoothstep(sn, 0.05, 0.6); }
   // thin-lens focus: distance along the view axis to the shot's focus point (default: the camera's look target)
   const d = dofAt(f);
   cam.getWorldDirection(fwd);

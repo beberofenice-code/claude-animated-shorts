@@ -361,7 +361,13 @@ export const stage = (id: number, t: number, cam: CamInfo, P: Pack, S: Ship, E: 
       for (let i = 0; i < 3; i++) {
         const k = clamp01((f - 1122 - i * 24) / 46), lad = onShip(P, S, [5.05 + 0.2 * (1 - k), ICE_Y + k * (DECK + 0.6 - ICE_Y), -4]);
         if (f > 1122 + i * 24 + 52) continue; // inside
-        if (k <= 0) stander(out, cam, { i: 61 + i, o: HUNTERS[i + 1], okey: `h${i + 1}` }, t, lad[0] + 1.4 + i * 1.1, ICE_Y, lad[2] - 1.2 - i * 0.9, "neutral");
+        if (k <= 0) { // wait, then walk to the foot of the ladder (2 m/s) so he arrives as his climb starts
+          const who = { i: 61 + i, o: HUNTERS[i + 1], okey: `h${i + 1}` };
+          const A: V3 = [lad[0] + 1.4 + i * 1.1, ICE_Y, lad[2] - 1.2 - i * 0.9], dx = lad[0] + 0.12 - A[0], dz = lad[2] - A[2];
+          const c0 = 1122 + i * 24, fw = c0 - (Math.hypot(dx, dz) / 2) * FPS;
+          if (f < fw) stander(out, cam, who, t, A[0], A[1], A[2], "neutral");
+          else walker(out, cam, who, t, A, dx, dz, 2, fw / FPS, "stern");
+        }
         else out.places.push(person(cam, { i: 61 + i, o: HUNTERS[i + 1], okey: `h${i + 1}` }, lad[0] + 0.12, lad[1] - 0.3, lad[2], { side: false, mirror: false }, { mode: "stand", expr: "stern", blink: 0, wave: 0.9 }, {}));
       }
       break;

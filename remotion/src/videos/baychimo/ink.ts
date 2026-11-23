@@ -177,7 +177,7 @@ void main() {
   }
 
   float ink = max(eD, eN) * strength * mix(1.0, farOpacity, t) * (1.0 - smoothstep(fadeNear, fadeFar, zc));
-  float f0 = max(fogRange.x, fogStart);
+  float f0 = max(fogRange.x, min(fogStart, fogRange.x + 0.25 * (fogRange.y - fogRange.x))); // dense fog (blizzard) tints lines early
   float fogK = fogRange.y > f0 ? clamp((zc - f0) / (fogRange.y - f0), 0.0, 1.0) : 0.0;
   gl_FragColor = vec4(ink, fogK, 0.0, 1.0);
 }`;
