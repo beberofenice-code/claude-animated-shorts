@@ -1,4 +1,4 @@
-# "The Tower That Wouldn't Stand Up Straight" — script v1 (2026-11-23)
+# "The Tower That Wouldn't Stand Up Straight" — script v2 (2026-11-23)
 Format: ~62 s vertical, ~3.7 words/s, one steady voice, our own characters and story.
 
 ## Facts (sources)
@@ -12,18 +12,18 @@ Format: ~62 s vertical, ~3.7 words/s, one steady voice, our own characters and s
 
 ## Voice-over
 Pisa spent two hundred years building a tower that started falling over in year five.
-It's 1173, and the city is building the most beautiful bell tower in Italy, out of pure white marble.
+It's 1173, and the city is building the grandest bell tower in Italy, out of pure white marble.
 Two floors up, the ground on one side turns out to be soft clay, and the whole thing starts to lean.
-A normal city would knock it down and start again. Pisa goes to war instead, and leaves it standing there for almost a hundred years.
-When the builders finally come back, it's still leaning, so they just make every new floor a little taller on the low side.
+A normal city would start again. Pisa goes to war instead, and leaves it standing for almost a hundred years.
+When the builders come back, it's still leaning, so they make each new floor taller on the low side.
 Which is how you get a tower that isn't just leaning. It's bent, like a banana.
-Then, in 1934, Mussolini decides it's embarrassing, and pumps two hundred tons of concrete underneath it.
+In 1934, Mussolini finds it embarrassing, and pumps two hundred tons of concrete under it.
 The tower sinks even further.
 Luckily, it didn't fall over.
 Unluckily, it now leaned more than ever.
 You see, the tower stands on soft, wet clay. Ever sat on the edge of a mattress? Your side sinks, so more of your weight slides that way, so it sinks even more.
 Now do that with fourteen thousand tons of marble.
 By 1990, it was so close to falling that they shut it, belted it with steel, and stacked six hundred tons of lead on the high side.
-Then engineers slowly sucked soil out from under that side, and the tower leaned back forty-five centimetres.
-They could have kept going until it stood perfectly straight. They stopped on purpose.
+Then engineers sucked soil out from under that side, and the tower leaned back forty-five centimetres.
+They could have made it perfectly straight. They stopped on purpose.
 Because nobody flies to Italy for a photo of themselves holding up a straight tower.
