@@ -460,7 +460,7 @@ const sceneStage = (id: number, scene: Scene, t: number, cam: CamInfo, out: Stag
       break;
     }
     case "strong": {
-      const lift = smooth((t - W(1245)) / 0.4) * 0.16;
+      const lift = smooth((t - W(1245)) / 0.4) * 0.32;
       putDancer(cam, t, out, { i: 980, x: -8.8, z: -1.6, hz: 0.8, ph0: 0.1, e: 0.4, spin: false, expr: "dazed" }, folk(3), { y: lift, eK: 1 });
       stand(cam, t, out, who(981, STRONG, "str"), -8.15, 0, -1.45, { expr: "stern", reach: 1, facing: -1 });
       stand(cam, t, out, who(982, STRONG2, "str2"), -9.45, 0, -1.5, { expr: "stern", reach: -1, facing: 1 });
@@ -532,7 +532,7 @@ const sceneStage = (id: number, scene: Scene, t: number, cam: CamInfo, out: Stag
     case "wagon": {
       const x = wagonX(t), bump = 0.035 * Math.abs(Math.sin(t * 7.5));
       const ph = q((t * 1.4) % 1, 12);
-      out.fx.push({ key: `horse${ph}`, cw: 900, ch: 640, draw: (p) => fxHorse(p, ph), x: x + 3.9, y: 0.92, z: ROAD_Z + 0.05, w: -2.6, h: 1.85 });
+      out.fx.push({ key: `horse${ph}`, cw: 900, ch: 640, draw: (p) => fxHorse(p, ph), x: x + 3.4, y: 0.92, z: ROAD_Z + 0.05, w: -2.6, h: 1.85 });
       sit(cam, t, out, who(1040, DRIVER, "driver"), x + 1.85, 1.05 + bump, ROAD_Z - 0.1, { expr: "neutral" });
       [[0.6, -0.35, 900], [-0.5, 0.25, 1041], [-1.3, -0.3, 1042], [0.0, 0.45, 1043]].forEach(([dx, dz, i], k) => {
         const w = i === 900 ? who(900, TROFFEA, "troff") : folk(i);

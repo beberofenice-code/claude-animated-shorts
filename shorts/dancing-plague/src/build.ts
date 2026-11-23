@@ -898,7 +898,7 @@ export const buildCity = (root: THREE.Object3D, kit: Kit, rays: Ray[] = []) => {
     const [kx, , kz] = STALL;
     blk(b, beam, kx - 1.8, kx + 1.8, 0, 1.0, kz - 0.4, kz + 0.4);                         // counter
     for (const s2 of [-1, 1]) blk(b, beam, kx + s2 * 1.75 - 0.06, kx + s2 * 1.75 + 0.06, 0, 2.5, kz - 0.9, kz - 0.78);
-    const aw = lam("awning", () => ({ map: ctex("awning", 256, 128, (g) => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? "#f1e6cf" : "#b8553a"; g.fillRect(i * 32, 0, 32, 128); } }), side: THREE.DoubleSide }));
+    const aw = lam("awning", () => ({ map: ctex("awning", 256, 128, (g) => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? "#f1e6cf" : "#5f8a5a"; g.fillRect(i * 32, 0, 32, 128); } }), side: THREE.DoubleSide }));
     b.add(quad(V(kx - 2, 2.5, kz - 0.9), V(kx + 2, 2.5, kz - 0.9), V(kx + 2, 2.1, kz + 0.6), V(kx - 2, 2.1, kz + 0.6)), aw);
     // two lonely loaves on the counter, an empty basket
     const bread = lam("bread", () => ({ color: "#c98a45" }));

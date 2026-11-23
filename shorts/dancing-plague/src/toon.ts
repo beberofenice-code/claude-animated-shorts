@@ -566,8 +566,8 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
   }
   else if (prop === "plead" || prop === "shoes" || prop === "bowl" || prop === "pipe") for (const side of [-1, 1]) {
     const S = sh(side);
-    const hy = prop === "pipe" ? chin + 0.1 * HH : prop === "bowl" ? torsoBot - 0.45 * HH : prop === "shoes" ? S[1] + 0.3 * HH : S[1] + 0.2 * HH;
-    const hx = prop === "pipe" ? 300 + 8 * u * facing + 3 * u : prop === "plead" ? tcx + side * 4 * u : tcx + side * 0.5 * T.a;
+    const hy = prop === "pipe" ? chin + 0.1 * HH : prop === "bowl" ? torsoBot - 0.45 * HH : prop === "shoes" ? torsoBot - 0.26 * HH : S[1] + 0.2 * HH;
+    const hx = prop === "pipe" ? 300 + 8 * u * facing + 3 * u : prop === "plead" ? tcx + side * 4 * u : prop === "shoes" ? tcx + side * 0.75 * T.a : tcx + side * 0.5 * T.a;
     arms.push({ pts: [S, [tcx + side * (1.12 * T.a + 6 * u), (S[1] + hy) / 2 + 0.2 * HH], [hx, hy]], front: true });
   }
   else {
@@ -583,7 +583,8 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
       arms.push({ pts: [S, [tcx + 1.05 * T.a + 4 * u, S[1] + 0.45 * HH], [tcx + 0.5 * T.a, S[1] + 0.4 * HH]], front: true });
     } else if (prop === "flask" || prop === "loaf") {
       const S = sh(1);
-      arms.push({ pts: [S, [tcx + 1.15 * T.a + 10 * u, S[1] - 0.05 * HH], [tcx + 1.05 * T.a + 6 * u, S[1] - 0.42 * HH]], front: true });
+      const up = prop === "flask" ? 0.62 : 0.42, out = prop === "flask" ? 22 : 6;
+      arms.push({ pts: [S, [tcx + 1.2 * T.a + (10 + out) * u, S[1] - 0.05 * HH], [tcx + 1.1 * T.a + (6 + out) * u, S[1] - up * HH]], front: true });
     } else if (Array.isArray(prop) && prop[0] === "drum") {
       const S = sh(1), k = clamp(prop[1], 0, 1);
       arms.push({ pts: [S, [tcx + 1.1 * T.a + 10 * u, S[1] + 0.1 * HH - 0.25 * HH * (1 - k)], [tcx + 0.5 * T.a + 8 * u * (1 - k), S[1] + 0.62 * HH - 0.55 * HH * (1 - k)]], front: true });
@@ -674,8 +675,8 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
       p.dot(hx, hy, 5.5 * u);
     }
   }
-  if (prop === "shoes") { // a pair of new red shoes, held out on both palms
-    const [hx, hy] = [tcx, sh(1)[1] + 0.26 * HH];
+  if (prop === "shoes") { // a pair of new red shoes, held out low in front on both palms
+    const [hx, hy] = [tcx, torsoBot - 0.3 * HH];
     for (const s2 of [-1, 1]) {
       const x0 = hx + s2 * 17 * u;
       p.poly([[x0 - 15 * u, hy - 4 * u], [x0 + 15 * u, hy - 4 * u], [x0 + 17 * u, hy + 10 * u], [x0 - 17 * u, hy + 10 * u]], "#d42a2a", 2.6 * u);
@@ -702,6 +703,11 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
   hatOn(p, o, hp, H, 300, hc, light, seed, facing, false);
   const brim = !!o.hat && o.hat !== "hair" && o.hat !== "bonnet" && o.hat !== "cap";
   faceFront(p, 300, hc, W, expr, facing, look, lid, brim, skin, o.moustache, o.build === "stout");
+  if (expr === "yawn") { // a polite hand over the yawn
+    const mx = 300 + 8 * u * facing + 13 * u, my = hc + 26 * u;
+    p.stroke([[mx + 30 * u, hc + 0.95 * HH], [mx + 16 * u, my + 18 * u], [mx + 4 * u, my + 6 * u]], 5.2 * u, mix(o.jacket, INK, 0.5));
+    p.ell(mx, my, 10 * u, 12 * u, skin, 3 * u);
+  }
   if (o.beard) p.poly(rotPts(ellPts(300 + 6 * u * facing, hc + 0.95 * H.b, 0.42 * H.a, 0.3 * H.b, 0, 180), 0, 300, hc), o.beard, 3 * u);
   if (prop === "pipe") { // a shawm / pipe from the lips down, both hands on it
     const m0: P2 = [300 + 8 * u * facing, hc + 20 * u], m1: P2 = [m0[0] + 4 * u, hc + 0.95 * HH];

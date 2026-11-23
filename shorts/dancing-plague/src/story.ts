@@ -184,13 +184,13 @@ const CAMS: Record<number, Key[]> = {
   // the doctors: two-shot with the flask, punch CU on "hot blood", wide smiles on "Luckily", finger up on "cure"
   14: [
     { f: 843, s: D(843, [-3.4, 1.65, -9.6], [-5.7, 1.55, -5.2], 38, 0, 0.0022) },
-    { f: 912, cut: true, s: D(912, [-5.2, 2.0, -7.7], [-6.1, 1.9, -5.45], 32, 0.035, 0.0025, 0.006, 32) },
+    { f: 912, cut: true, s: D(912, [-5.3, 1.95, -8.4], [-6.1, 1.85, -5.45], 34, 0.035, 0.0025, 0.006, 32) },
     { f: 941, cut: true, s: D(941, [-1.8, 1.7, -10.8], [-5.4, 1.4, -5.2], 40, 0, 0.002) },
     { f: 972, dur: 18, s: D(972, [-2.6, 1.7, -9.6], [-5.5, 1.6, -5.2], 37, -0.03, 0.002) },
   ],
   // "Unluckily": the doctor's deadpan close-up, "more dancing": the patients dance harder behind him
   15: [
-    { f: 1000, s: D(1000, [-5.15, 2.0, -7.9], [-6.1, 1.9, -5.45], 33, 0.03, 0.0022) },
+    { f: 1000, s: D(1000, [-5.3, 1.95, -8.5], [-6.1, 1.85, -5.45], 34, 0.03, 0.0022) },
     { f: 1035, cut: true, s: D(1035, [-2.0, 1.8, -11.6], [-5.0, 1.3, -4.6], 42, -0.035, 0.0018) },
   ],
   // the guildhall doors thrown open by the council
@@ -244,7 +244,7 @@ const CAMS: Record<number, Key[]> = {
   ],
   // golden: the cart of dancers bumping up the hill road, the lens rides along
   27: [
-    { f: 1811, s: (f: number) => { const x = wagonX(T(f)); return dolly([x + 0.6, 3.0, ROAD_Z - 13], [x + 1.8, 1.2, ROAD_Z], pushK(f, 1811, 0.0015), { fov: 42, roll: 0 }); } },
+    { f: 1811, s: (f: number) => { const x = wagonX(T(f)); return dolly([x + 1.2, 3.0, ROAD_Z - 13], [x + 2.4, 1.2, ROAD_Z], pushK(f, 1811, 0.0015), { fov: 42, roll: 0 }); } },
     { f: 1850, dur: 30, s: (f: number) => { const x = wagonX(T(f)); return dolly([x + 4.2, 1.6, ROAD_Z - 7.2], [x + 0.2, 1.55, ROAD_Z], pushK(f, 1850, 0.0015), { fov: 42, roll: -0.03 }); } },
   ],
   // the shrine of St Vitus on its hill, backlit
@@ -252,7 +252,7 @@ const CAMS: Record<number, Key[]> = {
   // the cure: the priest offers red shoes, then the red shoes on her feet (punch, a single tap)
   29: [
     { f: 1930, s: D(1930, [251.6, 1.65, -63.2], [255.8, 1.45, -60.0], 38, 0, 0.0022) },
-    { f: 2017, cut: true, s: D(2017, [253.75, 0.38, -62.15], [254.9, 0.2, -60.9], 34, 0.035, 0.003, 0.006, 32) },
+    { f: 2017, cut: true, s: D(2017, [253.8, 0.12, -62.1], [254.9, 0.06, -60.9], 34, 0.035, 0.003, 0.006, 32) },
   ],
 };
 CAMS[9] = CAMS[8]; CAMS[10] = CAMS[8];
@@ -331,6 +331,5 @@ export const focusAt = (id: number, f: number): V3 => {
 /** near framing objects (cartoon plants from build.ts kitClone), visible while a <= f < b inside one shot */
 export type Fg = { a: number; b: number; kit: string; pos: V3; s?: number; yaw?: number };
 export const FOREGROUND: Fg[] = [
-  { a: 1343, b: 1425, kit: "plant_bushDetailed", pos: [4.4, 0, -11.6], s: 1.1, yaw: 0.4 }, // bench row, bottom-left corner
   { a: 1884, b: 1934, kit: "plant_bushLarge", pos: [230.5, 0, -68.2], s: 1.5, yaw: 1.1 }, // shrine wide, bottom-left
 ];
