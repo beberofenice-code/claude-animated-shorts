@@ -28,7 +28,7 @@
 ## How to re-render
 - **Stills:** `node scripts/stills.mjs out/x/a_ 100,400 0.5` (swangle GL, no GPU needed).
 - **Debug camera:** `node scripts/dbgcam.mjs out.jpg <frame> '[{"pos":[..],"look":[..]}]'`.
-- **Final picture:** `npx remotion render src/index.ts BaychimoShort out/baychimo/video.mp4 --codec h264 --crf 16 --scale 1.3333333333333333 --gl swangle --concurrency 3`. Use the full-precision scale: 1.3333 gives a non-integer height. About 2 s per frame on 4 CPUs.
+- **Final picture:** `remotion/scripts/render_chunks.sh` renders 250-frame chunks and can resume. Delete a chunk in `out/baychimo/chunks/` to re-render only that range. The single-pass equivalent is `npx remotion render src/index.ts BaychimoShort out/baychimo/video.mp4 --codec h264 --crf 16 --scale 1.3333333333333333 --gl swangle --concurrency 3`. Use the full-precision scale: 1.3333 gives a non-integer height. About 2 s per frame on 4 CPUs.
 - **Mux:** `ffmpeg -i video.mp4 -i audio/mix.wav -map 0:v:0 -map 1:a:0 -c:v copy -c:a aac -b:a 256k final.mp4`
 
 ## Verifier
@@ -44,7 +44,25 @@
   - airport wall dressing
   - the suitcase kept visible
 
-## Known gaps
-- The ice-plate texture reads a little hexagonal.
-- The floes are faceted.
-- Faint ink line at the shore in the whiteout (frame ~575).
+- **Final audit (Opus max, on the 2K render):** colour day 7, golden 8, lighting 7, ink 7, textures 5, characters 7, depth 7, composition 6, story 7.
+- **Fixed after the final audit:**
+  - **Blockers:**
+    - In the blizzard, the world ink and the clouds now fade with the snow. Before, the ship stayed a crisp line drawing and a black line crossed the ice.
+    - The waiting hunters now walk to the ladder instead of teleporting onto it.
+  - **Frame 1461:** the ice and sea planes are subdivided. Software GL had dropped the whole two-triangle ice plane for one frame.
+- **Final QA:** 1440x2560, 30 fps, 1982 frames (66.07 s), −15.2 LUFS, −1.2 dBTP. No black, frozen or unplanned white frames. Every remaining frame-diff spike is a planned cut or kick.
+
+## Known gaps (nice-to-have, from the final audit)
+- Some characters are partly cut by the frame edge:
+  - 490-544: the left edge in the hut build.
+  - 620-642 and 880-904: the right edge.
+  - 1764-1795 and 1826-1838.
+- Narration and picture don't always match:
+  - "Freezes solid" plays over open sea until about 376.
+  - "Sled out" has no sled.
+  - "Storm" has a calm sky.
+  - "Round and round the same coast" shows no coast.
+- The plane is on screen for only about 9 frames (425-434).
+- The bow has a red smear, and the forestay ends in mid-air (880-904).
+- The seal hunter's shadow is detached from his feet (700-783).
+- The ice-plate texture reads a little hexagonal, and the floes are faceted.
