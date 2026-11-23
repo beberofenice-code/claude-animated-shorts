@@ -43,7 +43,7 @@ const hullGeo = () => {
     }
     for (let i = 0; i < NZ; i++) for (let j = 0; j < NY; j++) {
       const a = base + i * (NY + 1) + j, b = a + NY + 1;
-      if (side > 0) idx.push(a, a + 1, b, b, a + 1, b + 1); else idx.push(a, b, a + 1, b, b + 1, a + 1);
+      if (side < 0) idx.push(a, a + 1, b, b, a + 1, b + 1); else idx.push(a, b, a + 1, b, b + 1, a + 1); // outward faces
     }
   }
   const g = new THREE.BufferGeometry();
@@ -113,7 +113,7 @@ export const buildShip = (): ShipParts => {
   const hullTex = hullHD(); hullTex.wrapS = THREE.RepeatWrapping; hullTex.anisotropy = 16;
   const M = {
     hull: lam("hull", () => ({ map: hullTex })),
-    bulw: lam("bulwarkIn", () => ({ color: "#d9d2c2", side: THREE.DoubleSide })),
+    bulw: lam("bulwarkIn", () => ({ color: "#8c8a90", side: THREE.DoubleSide })),
     rail: lam("rail", () => ({ map: beamHD() })),
     deck: lam("shipDeck", () => ({ map: planksHD() })),
     snow: lam("shipSnow", () => ({ map: snowHD() })),
@@ -161,7 +161,10 @@ export const buildShip = (): ShipParts => {
     const hd = new THREE.SphereGeometry(0.48, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2); hd.rotateX(-Math.PI / 2 + 0.3); hd.translate(x, DECK + 2.8 + 1.9, -5.45); b.add(hd, M.red);
   }
   // hatches with coamings; tarps (the fore one comes off in shot 2)
-  for (const [z0, z1] of [[5.5, 10.5], [-15.5, -10]] as const) b.add(boxGeo(V(-2.3, DECK, z0), V(2.3, DECK + 0.8, z1)), M.white);
+  for (const [z0, z1] of [[5.5, 10.5], [-15.5, -10]] as const) { // hatch coamings: four walls (the fore hold shows in shot 2)
+    b.add(boxGeo(V(-2.3, DECK, z0), V(2.3, DECK + 0.8, z0 + 0.2)), M.white); b.add(boxGeo(V(-2.3, DECK, z1 - 0.2), V(2.3, DECK + 0.8, z1)), M.white);
+    b.add(boxGeo(V(-2.3, DECK, z0), V(-2.1, DECK + 0.8, z1)), M.white); b.add(boxGeo(V(2.1, DECK, z0), V(2.3, DECK + 0.8, z1)), M.white);
+  }
   b.add(boxGeo(V(-2.35, DECK + 0.8, -15.55), V(2.35, DECK + 0.92, -9.95)), M.tarp);
   // masts, crow's nest, booms, rigging
   const mast = (z: number, h: number) => {
@@ -198,20 +201,19 @@ export const buildShip = (): ShipParts => {
   }
   const hold = new THREE.Mesh(boxGeo(V(-2.2, DECK - 0.4, 5.6), V(2.2, DECK + 0.2, 10.4)), lam("hold", () => ({ color: "#3a2c22" })));
   bales.add(hold); bales.visible = false; root.add(bales);
-  // snow skirt: drifts piled against the hull at the ice line (frozen in)
+  // snow skirt: drifts piled against the hull at the ice line (frozen in), one strip per side
   const sk: number[] = [], skI: number[] = [], skUv: number[] = [];
-  const N = 120;
-  for (let i = 0; i <= N; i++) {
-    const t = (i / N) * Math.PI * 2;
-    // walk the waterline outline: port side forward, starboard aft
-    const z = Math.cos(t) * (ZB - 0.3 + 0.5) , side = Math.sin(t) >= 0 ? 1 : -1;
-    const zz = Math.max(ZS - 0.8, Math.min(ZB - 0.2, z));
-    const w = halfBeam(zz, 0.9) + 0.05;
-    const nx = side, out = 2.4 + 0.8 * Math.sin(i * 1.7);
-    sk.push(side * w, 1.1 + 0.25 * Math.sin(i * 2.3), zz, side * w + nx * out, 0.18, zz + (Math.abs(zz) > 20 ? Math.sign(zz) * out * 0.6 : 0));
-    skUv.push(i / 8, 0, i / 8, 0.2);
+  const N = 70;
+  for (const side of [-1, 1]) {
+    const base = sk.length / 3;
+    for (let i = 0; i <= N; i++) {
+      const zz = ZS + 0.2 + ((ZB - 1.2 - ZS - 0.2) * i) / N, w = halfBeam(zz, 0.9) + 0.04, out = 1.3 + 0.5 * Math.sin(i * 1.7);
+      if (w < 0.3) { sk.push(side * 0.3, 0.2, zz, side * 0.3, 0.2, zz); skUv.push(i / 6, 0, i / 6, 0.15); continue; }
+      sk.push(side * w, 0.85 + 0.18 * Math.sin(i * 2.3), zz, side * (w + out), 0.2, zz);
+      skUv.push(i / 6, 0, i / 6, 0.15);
+    }
+    for (let i = 0; i < N; i++) { const a = base + i * 2; if (side > 0) skI.push(a, a + 1, a + 2, a + 2, a + 1, a + 3); else skI.push(a, a + 2, a + 1, a + 2, a + 3, a + 1); }
   }
-  for (let i = 0; i < N; i++) { const a = i * 2; skI.push(a, a + 1, a + 2, a + 2, a + 1, a + 3); }
   const skG = new THREE.BufferGeometry();
   skG.setAttribute("position", new THREE.Float32BufferAttribute(sk, 3)); skG.setAttribute("uv", new THREE.Float32BufferAttribute(skUv, 2));
   skG.setIndex(skI); skG.computeVertexNormals();

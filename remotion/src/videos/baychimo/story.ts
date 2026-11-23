@@ -96,11 +96,18 @@ export const packAt = (id: number, f: number): Pack => {
     case 7: return { x: 520, z: 1350, rot: -0.3 };                 // far out on the horizon from the hunter
     case 8: return { x: -260, z: 1300, rot: -0.3 };                // far beyond the crew at the hut
     case 11: return { x: -60 + 0.55 * (f - 1029), z: 150, rot: 0.15 };    // drifting past the dog sled
-    case 14: { const u = (f - 1348) / (1486 - 1348); return { x: 0, z: 0, rot: -0.08 - 0.5 * u }; } // round and round (about the origin)
-    case 16: { const u = (f - 1603) / (1714 - 1603); return { x: 0, z: 0, rot: -0.58 - 0.45 * u }; }
+    case 14: { const u = (f - 1348) / (1486 - 1348); return rotAbout(-0.05 - 0.55 * u); } // round and round (about the gyre centre)
+    case 16: { const u = (f - 1603) / (1714 - 1603); return rotAbout(-0.6 - 0.45 * u); }
     case 17: return { x: 0 + 0.25 * (f - 1714), z: 120, rot: 0.6 };
     default: return { x: 0, z: 0, rot: 0 };
   }
+};
+
+/** the pack turning about GYRE (world point): ship (local origin) travels on a circle around it */
+export const GYRE: V3 = [-60, 0, 230];
+const rotAbout = (rot: number): Pack => {
+  const c = Math.cos(rot), s = Math.sin(rot), gx = GYRE[0], gz = GYRE[2];
+  return { x: gx - (c * gx + s * gz), z: gz - (-s * gx + c * gz), rot };
 };
 
 export const shipAt = (id: number, f: number): Ship => {
@@ -142,7 +149,7 @@ export const envAt = (id: number, f: number): Env => {
   if (id === 12) e.snow = 0.55;
   if (id === 13) e.heave = smooth((f - (F_SHOVE - 2)) / 7);
   if (id === 14 || id === 16) e.fogFar = 2400;
-  if (id === 17) e.plane = clamp01((f - 1745) / 22);
+  if (id === 17) e.plane = f < 1745 ? -1 : clamp01((f - 1745) / 22);
   return e;
 };
 
@@ -185,11 +192,11 @@ export const packPt = (p: Pack, l: V3): V3 => {
 const shipPt = (id: number, f: number, l: V3): V3 => { const sh = shipAt(id, f); return packPt(packAt(id, f), [l[0] + sh.x, l[1] + sh.y, l[2] + sh.z]); };
 
 // shot 1 (hook, golden): low over the ice, the crew walk toward us away from the frozen ship -> low hero angle on the bow
-const S1a = (f: number) => dolly([7, 1.5, 62], [0, 3.2, 20], pushK(f, 0, 0.0022), { fov: 42 });
+const S1a = (f: number) => dolly([4.5, 1.3, 56], [0.5, 2.4, 34], pushK(f, 0, 0.0022), { fov: 42 });
 const S1b = (f: number) => dolly([16, 0.9, 44], [2, 7.5, 18], pushK(f, 98, 0.0018, 0.006, 32), { fov: 40, roll: 0.04 });
 // shot 2 (day, open sea): high 3/4 establishing alongside -> hatch insert of the furs -> high pull-back over the ice-dotted sea
 const S2a = (f: number) => { const c = shipPt(2, f, [0, 0, 0]); return zoom([c[0] + 46, 26, c[2] + 52], [c[0], 4, c[2] + 4], 40, pushK(f, 177, 0.002)); };
-const S2b = (f: number) => { const c = shipPt(2, f, [0, 0, 0]); return dolly([c[0] + 3.4, c[1] + 8.4, c[2] + 12.2], [c[0] + 0.3, c[1] + 4.6, c[2] + 15.5], pushK(f, 234, 0.0025), { fov: 40, roll: -0.03 }); };
+const S2b = (f: number) => { const c = shipPt(2, f, [0, 0, 0]); return dolly([c[0] + 4.4, c[1] + 7.6, c[2] + 4.2], [c[0] + 0.1, c[1] + 4.5, c[2] + 8.2], pushK(f, 234, 0.0025), { fov: 40, roll: -0.03 }); };
 const S2c = (f: number) => { const c = shipPt(2, f, [0, 0, 0]); return dolly([c[0] - 60, 70, c[2] + 95], [c[0], 2, c[2] + 15], pushK(f, 280, 0.002), { fov: 42 }); };
 // shot 3: water-level 3/4 bow as the ice closes in -> sailor at the rail ("stuck")
 const S3a = (f: number) => { const c = shipPt(3, f, [0, 0, 0]); return dolly([c[0] + 24, 3.2, c[2] + 46], [c[0], 4, c[2] + 6], pushK(f, 308, 0.0025), { fov: 42 }); };
@@ -198,7 +205,7 @@ const S3b = (f: number) => { const c = shipPt(3, f, [0, 0, 0]); return dolly([c[
 const S4a = (f: number) => dolly([-14, 1.7, -30], [4, 6, 2], pushK(f, 409, 0.002), { fov: 44 });
 const S4b = (f: number) => dolly([HUT[0] + 9, LAND_Y + 2.1, HUT[2] + 13], [HUT[0], LAND_Y + 1.9, HUT[2]], pushK(f, 454, 0.0022), { fov: 40 });
 // shot 5: behind the crew at the hut looking out to sea (whiteout, then the empty ice)
-const S5a = (f: number) => dolly([HUT[0] - 1.5, LAND_Y + 2.6, HUT[2] - 7], [HUT[0] + 8, 3, HUT[2] + 80], pushK(f, 545, 0.0015), { fov: 40 });
+const S5a = (f: number) => dolly([HUT[0] + 4, LAND_Y + 2.3, HUT[2] + 6.5], [HUT[0] + 8, 3, HUT[2] + 90], pushK(f, 545, 0.0015), { fov: 40 });
 const S5b = (f: number) => dolly([HUT[0] + 6.5, LAND_Y + 1.7, HUT[2] + 10], [HUT[0] + 3.5, LAND_Y + 1.5, HUT[2] + 4], pushK(f, 620, 0.002, 0.007, 22), { fov: 38, roll: -0.04 });
 // shot 6: the captain MS, crew behind
 const S6a = (f: number) => dolly([HUT[0] + 5.2, LAND_Y + 1.75, HUT[2] + 9.8], [HUT[0] + 3.4, LAND_Y + 1.6, HUT[2] + 5.2], pushK(f, 643, 0.003, 0.006, 30), { fov: 36 });
@@ -216,24 +223,47 @@ const S9c = (f: number) => dolly([7, 2, -50], [2, 4, -10], pushK(f, 953, 0.002),
 const S10a = (f: number) => zoom([-38, 9, -78], [0, 6, 0], 40, pushK(f, 977, 0.0016));
 // shot 11: dog sled on the shore ice, side-on; she drifts past behind
 const SLED: V3 = [30, ICE_Y, -110];
-const S11a = (f: number) => dolly([SLED[0] - 1, 1.6, SLED[2] - 13], [SLED[0] + 1, 2.4, SLED[2] + 20], pushK(f, 1029, 0.002), { fov: 42 });
-const S11b = (f: number) => dolly([SLED[0] + 2.6, 1.55, SLED[2] - 5.5], [SLED[0] + 0.6, 1.5, SLED[2]], pushK(f, 1090, 0.0025, 0.006, 24), { fov: 38, roll: 0.035 });
+const S11a = (f: number) => dolly([SLED[0] + 2.2, 1.8, SLED[2] - 15], [SLED[0] + 2.2, 2.6, SLED[2] + 20], pushK(f, 1029, 0.002), { fov: 42 });
+const S11b = (f: number) => dolly([SLED[0] + 0.4, 1.6, SLED[2] - 5.2], [SLED[0] - 1.6, 1.5, SLED[2] + 0.4], pushK(f, 1090, 0.0025, 0.006, 24), { fov: 38, roll: 0.035 });
 // shot 12 (golden storm): hunters climbing the ladder -> the lit portholes
 const S12a = (f: number) => dolly([16, 2.0, -10], [4.6, 3.6, -2], pushK(f, 1120, 0.0022), { fov: 42 });
 const S12b = (f: number) => dolly([22, 5, 14], [4.6, 3.2, 2], pushK(f, 1166, 0.0025), { fov: 38, roll: -0.03 });
 // shot 13: the 1939 captain aboard at the rail (flag) -> the ice heaves, he flies off
 const S13a = (f: number) => dolly([18, 3.6, -2], [4.6, 5.6, -6], pushK(f, 1216, 0.002), { fov: 40 });
 const S13b = (f: number) => dolly([16, 4.4, 4], [4.4, 5.5, -4.5], pushK(f, 1290, 0.0025, 0.006, 30), { fov: 38, roll: 0.035 });
-const S13c = (f: number) => dolly([22, 2.4, -14], [8.5, 1.5, -6], pushK(f, 1331, 0.0025), { fov: 42 });
+const S13c = (f: number) => dolly([19, 1.8, -15.5], [12.5, 1.0, -9.5], pushK(f, 1331, 0.0025), { fov: 42 });
 // shot 14: high aerial of the pack and the coast; the pack turns
-const S14a = (f: number) => dolly([-120, 330, -380], [0, 0, 40], pushK(f, 1348, 0.0012), { fov: 44 });
-const S14b = (f: number) => dolly([-150, 420, -470], [0, 0, 80], pushK(f, 1440, 0.0012), { fov: 46, roll: -0.03 });
-// shot 15 (airport): the lonely suitcase on the carousel, then a wider look as it comes back round
-const S15a = (f: number) => dolly([AIR[0] + 4.4, 1.6, AIR[2] - 6.4], [AIR[0] + 1.4, 0.75, AIR[2] - 0.6], pushK(f, 1486, 0.0025), { fov: 40 });
-const S15b = (f: number) => dolly([AIR[0] - 9, 4.2, AIR[2] - 12], [AIR[0], 0.8, AIR[2]], pushK(f, 1558, 0.0022), { fov: 42 });
+const S14a = (f: number) => dolly([55, 330, -95], [60, 0, 45], pushK(f, 1348, 0.0012), { fov: 44 });
+const S14b = (f: number) => dolly([60, 380, -120], [65, 0, 50], pushK(f, 1440, 0.0012), { fov: 46, roll: -0.03 });
+// shot 15 (airport): the lonely suitcase on the carousel (tracked from outside the belt), then a wider look as it comes back round
+export const CAR = { STR: 3, RAD: 1.9 }, CAR_SPEED = 2.0;
+/** stadium centre line: [x, z, nx, nz, arcLength] samples (normal points outward), relative to AIR */
+export function carPath() {
+  const str = CAR.STR, rad = CAR.RAD, out: [number, number, number, number, number][] = [];
+  let s = 0, prev: [number, number] | null = null;
+  const push = (x: number, z: number, nx: number, nz: number) => { if (prev) s += Math.hypot(x - prev[0], z - prev[1]); out.push([x, z, nx, nz, s]); prev = [x, z]; };
+  for (let i = 0; i <= 10; i++) push(-str + (2 * str * i) / 10, -rad, 0, -1);
+  for (let i = 1; i <= 24; i++) { const a = -Math.PI / 2 + (Math.PI * i) / 24; push(str + rad * Math.cos(a), rad * Math.sin(a), Math.cos(a), Math.sin(a)); }
+  for (let i = 1; i <= 10; i++) push(str - (2 * str * i) / 10, rad, 0, 1);
+  for (let i = 1; i <= 24; i++) { const a = Math.PI / 2 + (Math.PI * i) / 24; push(-str + rad * Math.cos(a), rad * Math.sin(a), Math.cos(a), Math.sin(a)); }
+  return out;
+}
+/** position [x, z] and tangent [tx, tz] at arc length s (wraps) */
+export function carAt(path: [number, number, number, number, number][], s: number): [number, number, number, number] {
+  const L = path[path.length - 1][4], u = ((s % L) + L) % L;
+  let i = 1; while (i < path.length - 1 && path[i][4] < u) i++;
+  const a = path[i - 1], b = path[i], k = (u - a[4]) / Math.max(1e-6, b[4] - a[4]);
+  const tx = b[0] - a[0], tz = b[1] - a[1], tl = Math.hypot(tx, tz) || 1;
+  return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, tx / tl, tz / tl];
+}
+const CPATH = carPath();
+/** the suitcase: along the near straight at the start of the shot, round the far end, back again */
+export const suitcaseAt = (f: number) => carAt(CPATH, (f - 1486) / FPS * CAR_SPEED + 0.4);
+const S15a = (f: number) => { const p = suitcaseAt(Math.max(f, 1486)); return dolly([AIR[0] + p[0] - 0.6, 1.35, AIR[2] - 5.4], [AIR[0] + p[0] + 0.3, 0.6, AIR[2] - 1.9], pushK(f, 1486, 0.0025), { fov: 38 }); };
+const S15b = (f: number) => dolly([AIR[0] - 1.5, 3.0, AIR[2] - 9.5], [AIR[0] + 2.8, 0.6, AIR[2]], pushK(f, 1558, 0.0022), { fov: 42 });
 // shot 16: the pack from high again (match), then the hull at the ice line, sealed tight
-const S16a = (f: number) => dolly([-130, 360, -420], [0, 0, 60], pushK(f, 1603, 0.0012), { fov: 44 });
-const S16b = (f: number) => { const p = packAt(16, f); const c = packPt(p, [6.2, 1.4, -6]), l = packPt(p, [4.3, 1.3, -2]); return dolly(c, l, pushK(f, 1668, 0.003, 0.007, 30), { fov: 38, roll: -0.035 }); };
+const S16a = (f: number) => dolly([140, 360, -40], [145, 0, 115], pushK(f, 1603, 0.0012), { fov: 44 });
+const S16b = (f: number) => { const p = packAt(16, f); const c = packPt(p, [10.5, 1.7, -10.5]), l = packPt(p, [4.6, 1.8, -4.5]); return dolly(c, l, pushK(f, 1668, 0.003, 0.007, 30), { fov: 38, roll: -0.035 }); };
 // shot 17: montage of spotters, each with her drifting behind
 const S17a = (f: number) => dolly([60, 1.7, 40], [80, 4, 140], pushK(f, 1714, 0.003), { fov: 40 });
 const S17b = (f: number) => dolly([130, 1.6, 100], [40, 5, 120], pushK(f, 1734, 0.003), { fov: 40, roll: 0.03 });
@@ -317,7 +347,7 @@ export const DOF: Dof[] = [
   { f: 1558, cInf: 0 },
   { f: 1668, cInf: 14 },         // hull CU
   { f: 1714, cInf: 0 },
-  { f: 1760, cInf: 9 },          // 1969 party
+  { f: 1760, cInf: 9, focus: () => [-6.5, ICE_Y + 1.5, -26.6] }, // 1969 party: their eyes
   { f: 1808, cInf: 0 },
 ];
 export const dofAt = (f: number) => {

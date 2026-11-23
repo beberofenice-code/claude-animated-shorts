@@ -9,10 +9,11 @@ import { Pen } from "./toon";
 import { LIGHTS, LOOK, LightPreset } from "./lights";
 import { TONE, CHAR, LFB, twoTone, untone } from "./shade";
 import { NOINK } from "./ink";
+import { getInputProps } from "remotion";
 import { Pool, Actor, Fx, stage } from "./cast";
 import { buildShip, ShipParts } from "./ship";
 import {
-  FPS, SHOTS, ShotDef, V3, camAt, packAt, shipAt, envAt, packPt, Pack, ICE_Y, SHORE, LAND_Y, HUT, AIR, HALF_L, BEAM, DECK, smooth, clamp01,
+  FPS, SHOTS, ShotDef, V3, camAt, carPath, carAt, CAR, CAR_SPEED, suitcaseAt, packAt, shipAt, envAt, packPt, Pack, ICE_Y, SHORE, LAND_Y, HUT, AIR, HALF_L, BEAM, DECK, smooth, clamp01,
 } from "./story";
 
 export type Kit = Record<string, THREE.Object3D>;
@@ -192,7 +193,7 @@ export class World {
       sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\nvarying vec2 vLP;")
         .replace("#include <begin_vertex>", "#include <begin_vertex>\nvLP = position.xz;");
       sh.fragmentShader = sh.fragmentShader.replace("#include <common>", ICE_DECL)
-        .replace("void main() {", "void main() {\n  float iceN = vnoise(vLP * 0.045) * 18.0 + vnoise(vLP * 0.2) * 4.0;\n  if (hullD(vLP) + iceN - 11.0 < uIceR) discard;");
+        .replace("void main() {", "void main() {\n  float hd = hullD(vLP), iceN = vnoise(vLP * 0.045) * 18.0 + vnoise(vLP * 0.2) * 4.0;\n  if (hd + iceN < uIceR) discard;\n  float ld = abs(vnoise(vLP * 0.006) - 0.5) + 0.35 * abs(vnoise(vLP * 0.021 + 7.0) - 0.5) * 0.0;\n  if (hd > 60.0 && ld < 0.012 + 0.006 * vnoise(vLP * 0.05)) discard;");
     };
     iceM.customProgramCacheKey = () => "packIce2";
     const ig = new THREE.PlaneGeometry(5600, 5600, 1, 1); ig.rotateX(-Math.PI / 2); ig.translate(0, ICE_Y, 0);
@@ -200,7 +201,7 @@ export class World {
     // floes, ridges and icebergs: instanced chunks, culled off every sight line
     const rays = sightLines(true);
     const rnd = rng(7);
-    const chunkG = new THREE.IcosahedronGeometry(1, 1); // rounded, snow-covered blocks
+    const chunkG = new THREE.IcosahedronGeometry(1, 2); // rounded, snow-covered blocks
     const snowM = lam("snowChunk", () => ({ map: snowHD() }));
     const pick: typeof this.floeData = [];
     for (let i = 0; i < 900 && pick.length < 340; i++) {
@@ -209,7 +210,7 @@ export class World {
       const big = rnd() < 0.08 && r > 160;
       const s: V3 = big ? [12 + rnd() * 16, 4 + rnd() * 6, 12 + rnd() * 16] : [1.4 + rnd() * 3.0, 0.35 + rnd() * 0.8, 1.4 + rnd() * 3.0];
       const d = hullD(x, z);
-      if (d < 4) continue;
+      if (d < 9) continue;
       if (blocks(rays, V(x, 0.6, z), Math.max(s[0], s[2]) * 1.1 + 0.8)) continue;
       pick.push({ x, z, s, r: rnd() * 6, d });
     }
@@ -219,9 +220,9 @@ export class World {
     this.pack.add(this.floes);
     // pressure ridge slabs off the starboard side (shot 13 heave)
     for (let k = 0; k < 7; k++) {
-      const g = new THREE.BoxGeometry(2.6 + (k % 3) * 0.8, 0.55, 2.2 + (k % 2)); g.translate(1.3, 0, 0);
+      const g = new THREE.BoxGeometry(1.8 + (k % 3) * 0.5, 0.45, 1.6 + 0.6 * (k % 2)); g.translate(0.9, 0, 0);
       const m = new THREE.Mesh(g, snowM); m.castShadow = true; m.receiveShadow = true;
-      const x0 = 9.5 + (k % 2) * 1.6, z0 = -13 + k * 2.6;
+      const x0 = 8.2 + (k % 2) * 1.2, z0 = -4 + k * 2.0;
       m.position.set(x0, ICE_Y + 0.1, z0); this.heave.push({ m, x0, s: 0.6 + 0.12 * (k % 3) });
       this.pack.add(m);
     }
@@ -244,6 +245,9 @@ export class World {
     }
     lg.computeVertexNormals();
     const land = new THREE.Mesh(lg, landM); land.receiveShadow = true; land.castShadow = false; this.arctic.add(land);
+    const rock = lam("shoreRock", () => ({ color: "#6f655d" }));
+    const sg2 = new THREE.PlaneGeometry(5000, 7, 1, 1); sg2.rotateX(-Math.PI / 2); sg2.translate(0, 0.42, SHORE - 2.2);
+    const shore = new THREE.Mesh(sg2, rock); shore.receiveShadow = true; this.arctic.add(shore);
     const mb = new Batch();
     for (let k = 0; k < 16; k++) { // distant mountains along the coast
       const g = new THREE.ConeGeometry(160 + (k % 4) * 60, 140 + (k % 5) * 70, 7, 1);
@@ -261,7 +265,7 @@ export class World {
     hb.add(boxGeo(V(1.2, 1.1, 2.08), V(2.0, 1.8, 2.16)), lam("hutWin", () => ({ color: "#33496a" })));
     hb.build(this.hutWalls);
     const tb = new Batch();
-    for (const s of [-1, 1]) tb.add(new THREE.PlaneGeometry(3.2, 5.8).rotateX(-Math.PI / 2).rotateZ(s * 0.62).translate(s * 1.32, 3.5, 0), roofSnow);
+    for (const s of [-1, 1]) tb.add(new THREE.PlaneGeometry(3.2, 5.8).rotateX(-Math.PI / 2).rotateZ(-s * 0.606).translate(s * 1.3, 3.5, 0), roofSnow);
     for (const z of [-2.1, 2.1]) { const tg = new THREE.BufferGeometry(); tg.setAttribute("position", new THREE.Float32BufferAttribute([-2.6, 2.6, z, 2.6, 2.6, z, 0, 4.4, z], 3)); tg.setAttribute("uv", new THREE.Float32BufferAttribute([0, 0, 1, 0, 0.5, 1], 2)); tg.computeVertexNormals(); tb.add(tg, boards); }
     tb.add(beamBetween(V(1.4, 3.2, -0.8), V(1.4, 5.4, -0.8), 0.22, true), lam("pipe", () => ({ color: "#3a3a40" })));
     tb.build(this.hutTop);
@@ -307,29 +311,29 @@ export class World {
 
     // ---- airport hall + carousel (shot 15) ----
     const A = AIR, floorT = tileHD(); floorT.repeat.set(6, 5); floorT.anisotropy = 16;
-    const ab = new Batch();
+    const ab = new Batch(), shell = new Batch();
     const wallM = lam("hallWall", () => ({ color: "#e6dccb" })), steel = twoTone(new THREE.MeshPhongMaterial({ color: "#a9adb5", specular: "#ffffff", shininess: 60 }), 0.15);
     const floorG = new THREE.PlaneGeometry(48, 40); floorG.rotateX(-Math.PI / 2); floorG.translate(A[0], 0, A[2]);
     ab.add(floorG, lam("hallFloor", () => ({ map: floorT })));
-    ab.add(boxGeo(V(A[0] - 24, 0, A[2] + 14), V(A[0] + 24, 9, A[2] + 15)), wallM);
-    ab.add(boxGeo(V(A[0] - 24, 0, A[2] - 26), V(A[0] + 24, 9, A[2] - 25)), wallM);
-    ab.add(boxGeo(V(A[0] - 25, 0, A[2] - 26), V(A[0] - 24, 9, A[2] + 15)), wallM);
-    ab.add(boxGeo(V(A[0] + 24, 0, A[2] - 26), V(A[0] + 25, 9, A[2] + 15)), wallM);
-    ab.add(boxGeo(V(A[0] - 25, 9, A[2] - 26), V(A[0] + 25, 9.4, A[2] + 15), 0, true), lam("hallCeil", () => ({ color: "#d8d2c6" })));
+    shell.add(boxGeo(V(A[0] - 24, 0, A[2] + 14), V(A[0] + 24, 9, A[2] + 15)), wallM);
+    shell.add(boxGeo(V(A[0] - 24, 0, A[2] - 26), V(A[0] + 24, 9, A[2] - 25)), wallM);
+    shell.add(boxGeo(V(A[0] - 25, 0, A[2] - 26), V(A[0] - 24, 9, A[2] + 15)), wallM);
+    shell.add(boxGeo(V(A[0] + 24, 0, A[2] - 26), V(A[0] + 25, 9, A[2] + 15)), wallM);
+    shell.add(boxGeo(V(A[0] - 25, 9, A[2] - 26), V(A[0] + 25, 9.4, A[2] + 15), 0, true), lam("hallCeil", () => ({ color: "#d8d2c6" })));
     for (let i = -2; i <= 2; i++) ab.add(boxGeo(V(A[0] - 24, 0, A[2] + 13.6), V(A[0] + 24, 0.25, A[2] + 14)), lam("skirting", () => ({ color: "#6a6460" })));
-    for (const x of [-12, 12]) for (const z of [-14, 6]) ab.add(boxGeo(V(A[0] + x - 0.5, 0, A[2] + z - 0.5), V(A[0] + x + 0.5, 9, A[2] + z + 0.5)), wallM); // columns
+    for (const x of [-12, 12]) for (const z of [-14, 6]) shell.add(boxGeo(V(A[0] + x - 0.5, 0, A[2] + z - 0.5), V(A[0] + x + 0.5, 9, A[2] + z + 0.5)), wallM); // columns
     // carousel: stadium of straight 2 x 3 m and radius 1.9 m; base, belt ring (own mesh, scrolling), steel island
-    const STR = 3, RAD = 1.9, W2 = 0.55;
+    const STR = CAR.STR, RAD = CAR.RAD, W2 = 0.55;
     const stadium = (r: number, y: number) => {
       const s = new THREE.Shape(); s.moveTo(-STR, -r); s.lineTo(STR, -r); s.absarc(STR, 0, r, -Math.PI / 2, Math.PI / 2, false); s.lineTo(-STR, r); s.absarc(-STR, 0, r, Math.PI / 2, Math.PI * 1.5, false);
       const g = new THREE.ExtrudeGeometry(s, { depth: y, bevelEnabled: false, curveSegments: 20 }); g.rotateX(-Math.PI / 2); g.translate(A[0], 0, A[2]); return g;
     };
     ab.add(stadium(RAD + W2 + 0.15, 0.42), lam("carBase", () => ({ color: "#5a5e66" })));
     ab.add(stadium(RAD - W2, 0.95), steel);
-    ab.build(this.airport);
+    ab.build(this.airport); shell.build(this.airport, false);
     // belt: a strip around the stadium centre line, u = arc length (1 unit = 2 m of the belt map)
     const bp: number[] = [], bu: number[] = [], bi: number[] = [];
-    const path = carPath(STR, RAD), N = path.length;
+    const path = carPath(), N = path.length;
     for (let i = 0; i < N; i++) {
       const [x, z, nx, nz, s] = path[i];
       bp.push(A[0] + x - nx * W2, 0.46, A[2] + z - nz * W2, A[0] + x + nx * W2, 0.46, A[2] + z + nz * W2);
@@ -401,7 +405,8 @@ export class World {
     const inside = s.zone === "airport";
     this.arctic.visible = !inside; this.airport.visible = inside;
     // ---- camera ----
-    const c = camAt(id, f);
+    const dbg = (getInputProps() as { cam?: { pos: V3; look: V3; fov?: number } }).cam;
+    const c = dbg ? { pos: dbg.pos, look: dbg.look, fov: dbg.fov ?? 40, roll: 0 } : camAt(id, f);
     cam.position.set(...c.pos); cam.up.set(0, 1, 0); cam.lookAt(...c.look); cam.rotateZ(c.roll);
     cam.fov = c.fov; cam.near = 0.2; cam.far = 6000; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
     const focus = V(...c.look), dist = cam.position.distanceTo(focus);
@@ -481,8 +486,8 @@ export class World {
     this.hutWalls.scale.set(1, Math.max(0.001, E.hut), 1); this.hutWalls.visible = E.hut > 0.01;
     this.hutTop.visible = E.hut > 0.97;
     // ski plane
-    this.plane.visible = E.plane >= 0;
-    if (E.plane >= 0) {
+    this.plane.visible = E.plane > 0 || (E.plane === 0 && id === 4);
+    if (this.plane.visible) {
       const u = E.plane, ss = id === 17;
       const a = ss ? V(-30, 30, 160) : V(26, 1.6, 40), b = ss ? V(150, 36, 70) : V(-34, 42, -95), mid = ss ? V(60, 34, 120) : V(0, 10, -15);
       const p0 = a.clone().lerp(mid, u).lerp(mid.clone().lerp(b, u), u);
@@ -496,7 +501,7 @@ export class World {
     // ---- airport ----
     if (inside) {
       this.belt.offset.x = -t * CAR_SPEED / 2;
-      const sArc = (t - 49.6) * CAR_SPEED + 2.0, P2 = carAt(this.carPath, sArc);
+      const P2 = suitcaseAt(f);
       this.suitcase.position.set(AIR[0] + P2[0], 0.47, AIR[2] + P2[1]); this.suitcase.rotation.set(0, Math.atan2(P2[2], P2[3]) + 0.25, 0);
     }
     // ---- snow + smoke ----
@@ -570,28 +575,6 @@ export class World {
 
 export const SLED_AT: V3 = [30, ICE_Y, -110];
 export const F_FLAG_DROP = 1322;
-export const CAR_SPEED = 1.15;
-/** stadium centre line: [x, z, nx, nz, arcLength] samples (normal points outward) */
-function carPath(str: number, rad: number) {
-  const out: [number, number, number, number, number][] = [];
-  let s = 0, prev: [number, number] | null = null;
-  const push = (x: number, z: number, nx: number, nz: number) => { if (prev) s += Math.hypot(x - prev[0], z - prev[1]); out.push([x, z, nx, nz, s]); prev = [x, z]; };
-  for (let i = 0; i <= 10; i++) push(-str + (2 * str * i) / 10, -rad, 0, -1);
-  for (let i = 1; i <= 24; i++) { const a = -Math.PI / 2 + (Math.PI * i) / 24; push(str + rad * Math.cos(a), rad * Math.sin(a), Math.cos(a), Math.sin(a)); }
-  for (let i = 1; i <= 10; i++) push(str - (2 * str * i) / 10, rad, 0, 1);
-  for (let i = 1; i <= 24; i++) { const a = Math.PI / 2 + (Math.PI * i) / 24; push(-str + rad * Math.cos(a), rad * Math.sin(a), Math.cos(a), Math.sin(a)); }
-  return out;
-}
-/** position [x, z] and tangent [tx, tz] at arc length s (wraps) */
-export function carAt(path: [number, number, number, number, number][], s: number): [number, number, number, number] {
-  const L = path[path.length - 1][4], u = ((s % L) + L) % L;
-  let i = 1; while (i < path.length - 1 && path[i][4] < u) i++;
-  const a = path[i - 1], b = path[i], k = (u - a[4]) / Math.max(1e-6, b[4] - a[4]);
-  const tx = b[0] - a[0], tz = b[1] - a[1], tl = Math.hypot(tx, tz) || 1;
-  return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, tx / tl, tz / tl];
-}
-export const CAR = { STR: 3, RAD: 1.9 };
-export const carPathPublic = () => carPath(CAR.STR, CAR.RAD);
 void packPt; void clamp01; void ([] as Pack[]);
 
 const WATER_DECL = `#include <common>
