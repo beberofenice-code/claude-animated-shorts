@@ -347,9 +347,9 @@ def sfx():
     place(out, st(ice_crack(r, 1.4)) * 0.85, fr(1320) - 0.01)
     place(out, st(timber_tear(r, 0.6)) * 0.35, fr(1320) + 0.05)
     place(out, pan(whoa(r, 120), 0.25) * 0.4, fr(1321) + 0.02)
-    place(out, pan(soft_thump(r, 60, 0.4), 0.3) * 0.7, fr(1338))
-    place(out, pan(oof(r, "oof", 115), 0.3) * 0.45, fr(1338) + 0.02)
-    place(out, widen(bp(colored(ns(0.6), r, 0.5), 400, 5000, 1) * np.exp(-tt(0.6) / 0.15) * 0.6, r), fr(1338))
+    place(out, pan(soft_thump(r, 60, 0.4), 0.3) * 0.7, fr(1344))
+    place(out, pan(oof(r, "oof", 115), 0.3) * 0.45, fr(1344) + 0.02)
+    place(out, widen(bp(colored(ns(0.6), r, 0.5), 400, 5000, 1) * np.exp(-tt(0.6) / 0.15) * 0.6, r), fr(1344))
     cue(fr(1320), "ice heave crack, 'whoa', snow thump + oof")
     # --- aerial: slow grinding of the pack
     place(out, widen(ice_creak(r, 3.5, 35, 60, 1.0), r) * 0.35, 45.6)

@@ -15,7 +15,7 @@ export type LightPreset = {
 export const LIGHTS: Record<"day" | "golden", LightPreset> = {
   day: {
     az: 70, el: 30, // Arctic: a lower sun than the bridge's English summer
-    lit: [1.5, 1.46, 1.36], shade: [0.3, 0.29, 0.36], lift: [0.05, 0.06, 0.11], lambert: 0.35, sideK: 0.84, term: 0.2,
+    lit: [1.38, 1.3, 1.14], shade: [0.24, 0.26, 0.44], lift: [0.04, 0.06, 0.14], lambert: 0.35, sideK: 0.84, term: 0.2,
     charTint: [1.0, 0.94, 0.92], charShade: 0.86, charGrad: 0.07, bodyGrad: 0.2, sideTint: [0.92, 0.90, 0.96],
     blob: [0.62, 0.58, 0.58], actorShadow: false,
     top: "#3e7fd2", hor: "#c4d8ee", skyCurve: [0.0, 0.5, 0.6], fog: "#c4d8ee", fogNear: 40, fogFar: 900, sunDisc: "#000000",

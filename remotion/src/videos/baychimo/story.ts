@@ -98,7 +98,7 @@ export const packAt = (id: number, f: number): Pack => {
     case 11: return { x: -60 + 0.55 * (f - 1029), z: 150, rot: 0.15 };    // drifting past the dog sled
     case 14: { const u = (f - 1348) / (1486 - 1348); return rotAbout(-0.05 - 0.55 * u); } // round and round (about the gyre centre)
     case 16: { const u = (f - 1603) / (1714 - 1603); return rotAbout(-0.6 - 0.45 * u); }
-    case 17: return { x: 0 + 0.25 * (f - 1714), z: 120, rot: 0.6 };
+    case 17: return { x: 30 + 0.25 * (f - 1714), z: 120, rot: 0.6 };
     default: return { x: 0, z: 0, rot: 0 };
   }
 };
@@ -146,7 +146,7 @@ export const envAt = (id: number, f: number): Env => {
   if (id === 5) e.snow = lin([[548, 0], [562, 1], [588, 1], [612, 0.1], [634, 0]], f);
   if (id === 6) e.snow = 0.12;
   if (id === 7 || id === 8) e.fogFar = 2600;
-  if (id === 12) e.snow = 0.55;
+  if (id === 12) e.snow = 0.32;
   if (id === 13) e.heave = smooth((f - (F_SHOVE - 2)) / 7);
   if (id === 14 || id === 16) e.fogFar = 2400;
   if (id === 17) e.plane = f < 1745 ? -1 : clamp01((f - 1745) / 22);
@@ -200,7 +200,7 @@ const S2b = (f: number) => { const c = shipPt(2, f, [0, 0, 0]); return dolly([c[
 const S2c = (f: number) => { const c = shipPt(2, f, [0, 0, 0]); return dolly([c[0] - 60, 70, c[2] + 95], [c[0], 2, c[2] + 15], pushK(f, 280, 0.002), { fov: 42 }); };
 // shot 3: water-level 3/4 bow as the ice closes in -> sailor at the rail ("stuck")
 const S3a = (f: number) => { const c = shipPt(3, f, [0, 0, 0]); return dolly([c[0] + 24, 3.2, c[2] + 46], [c[0], 4, c[2] + 6], pushK(f, 308, 0.0025), { fov: 42 }); };
-const S3b = (f: number) => { const c = shipPt(3, f, [0, 0, 0]); return dolly([c[0] + 9.5, c[1] + 6.4, c[2] + 9], [c[0] + 3.9, c[1] + 5.6, c[2] + 4.5], pushK(f, 380, 0.002, 0.007, 28), { fov: 38, roll: 0.035 }); };
+const S3b = (f: number) => { const c = shipPt(3, f, [0, 0, 0]); return dolly([c[0] + 12.5, c[1] + 5.4, c[2] + 10.5], [c[0] + 4.6, c[1] + 3.2, c[2] + 5], pushK(f, 380, 0.002, 0.007, 28), { fov: 40, roll: 0.035 }); };
 // shot 4: crew on the ice waving at the plane -> the hut going up on the shore
 const S4a = (f: number) => dolly([-14, 1.7, -30], [4, 6, 2], pushK(f, 409, 0.002), { fov: 44 });
 const S4b = (f: number) => dolly([HUT[0] + 9, LAND_Y + 2.1, HUT[2] + 13], [HUT[0], LAND_Y + 1.9, HUT[2]], pushK(f, 454, 0.0022), { fov: 40 });
@@ -231,7 +231,7 @@ const S12b = (f: number) => dolly([22, 5, 14], [4.6, 3.2, 2], pushK(f, 1166, 0.0
 // shot 13: the 1939 captain aboard at the rail (flag) -> the ice heaves, he flies off
 const S13a = (f: number) => dolly([18, 3.6, -2], [4.6, 5.6, -6], pushK(f, 1216, 0.002), { fov: 40 });
 const S13b = (f: number) => dolly([16, 4.4, 4], [4.4, 5.5, -4.5], pushK(f, 1290, 0.0025, 0.006, 30), { fov: 38, roll: 0.035 });
-const S13c = (f: number) => dolly([19, 1.8, -15.5], [12.5, 1.0, -9.5], pushK(f, 1331, 0.0025), { fov: 42 });
+const S13c = (f: number) => dolly([20, 2.2, -16.5], [10.5, 2.6, -8.5], pushK(f, 1331, 0.0025), { fov: 44 });
 // shot 14: high aerial of the pack and the coast; the pack turns
 const S14a = (f: number) => dolly([55, 330, -95], [60, 0, 45], pushK(f, 1348, 0.0012), { fov: 44 });
 const S14b = (f: number) => dolly([60, 380, -120], [65, 0, 50], pushK(f, 1440, 0.0012), { fov: 46, roll: -0.03 });
@@ -260,14 +260,14 @@ const CPATH = carPath();
 /** the suitcase: along the near straight at the start of the shot, round the far end, back again */
 export const suitcaseAt = (f: number) => carAt(CPATH, (f - 1486) / FPS * CAR_SPEED + 0.4);
 const S15a = (f: number) => { const p = suitcaseAt(Math.max(f, 1486)); return dolly([AIR[0] + p[0] - 0.6, 1.35, AIR[2] - 5.4], [AIR[0] + p[0] + 0.3, 0.6, AIR[2] - 1.9], pushK(f, 1486, 0.0025), { fov: 38 }); };
-const S15b = (f: number) => dolly([AIR[0] - 1.5, 3.0, AIR[2] - 9.5], [AIR[0] + 2.8, 0.6, AIR[2]], pushK(f, 1558, 0.0022), { fov: 42 });
+const S15b = (f: number) => { const p = suitcaseAt(1580); return dolly([AIR[0] - 1.0, 3.0, AIR[2] - 9.5], [AIR[0] + p[0] - 0.5, 0.6, AIR[2] + p[1] + 0.5], pushK(f, 1558, 0.0022), { fov: 42 }); };
 // shot 16: the pack from high again (match), then the hull at the ice line, sealed tight
 const S16a = (f: number) => dolly([140, 360, -40], [145, 0, 115], pushK(f, 1603, 0.0012), { fov: 44 });
 const S16b = (f: number) => { const p = packAt(16, f); const c = packPt(p, [10.5, 1.7, -10.5]), l = packPt(p, [4.6, 1.8, -4.5]); return dolly(c, l, pushK(f, 1668, 0.003, 0.007, 30), { fov: 38, roll: -0.035 }); };
 // shot 17: montage of spotters, each with her drifting behind
-const S17a = (f: number) => dolly([57.5, 1.8, 35], [72, 4, 130], pushK(f, 1714, 0.003), { fov: 40 });
+const S17a = (f: number) => dolly([66, 1.8, 33], [40, 4, 120], pushK(f, 1714, 0.003), { fov: 40 });
 const S17b = (f: number) => dolly([130, 1.6, 100], [40, 5, 120], pushK(f, 1734, 0.003), { fov: 40, roll: 0.03 });
-const S17c = (f: number) => dolly([42, 3, 62], [12, 12, 122], pushK(f, 1746, 0.003), { fov: 44 });
+const S17c = (f: number) => dolly([62, 3, 62], [32, 12, 122], pushK(f, 1746, 0.003), { fov: 44 });
 // shot 18 (golden): the 1969 party in orange, the ship locked in the ice
 const S18a = (f: number) => dolly([-14, 2.0, -40], [-1, 4.2, -6], pushK(f, 1760, 0.0025, 0.006, 30), { fov: 40 });
 const S18b = (f: number) => dolly([-6, 1.4, -32], [0, 6, 0], pushK(f, 1808, 0.0022), { fov: 40, roll: -0.03 });
@@ -294,7 +294,7 @@ const CAMS: Record<number, Key[]> = {
   10: [{ f: 970, s: S10a }],
   11: [{ f: 1022, s: S11a }, { f: 1090, cut: true, s: S11b }],
   12: [{ f: 1114, s: S12a }, { f: 1166, cut: true, s: S12b }],
-  13: [{ f: 1210, s: S13a }, { f: 1290, cut: true, s: S13b }, { f: 1331, cut: true, s: S13c }],
+  13: [{ f: 1210, s: S13a }, { f: 1290, cut: true, s: S13b }, { f: 1323, cut: true, s: S13c }],
   14: [{ f: 1342, s: S14a }, { f: 1430, dur: 30, s: S14b }],
   15: [{ f: 1480, s: S15a }, { f: 1558, cut: true, s: S15b }],
   16: [{ f: 1597, s: S16a }, { f: 1668, cut: true, s: S16b }],
@@ -325,7 +325,7 @@ export const camAt = (id: number, f: number): Cam => {
 // ---------------- lens ----------------
 export type Dof = { f: number; dur?: number; cInf: number; focus?: (f: number) => V3 };
 export const DOF: Dof[] = [
-  { f: 0, cInf: 12 },            // hook: crew sharp, ship soft
+  { f: 0, cInf: 12, focus: () => [1, 1.6, 41] }, // hook: crew sharp, ship soft
   { f: 98, cInf: 0 },            // hero bow
   { f: 177, cInf: 0 },           // open-sea establishing
   { f: 234, cInf: 13 },          // fur hatch insert

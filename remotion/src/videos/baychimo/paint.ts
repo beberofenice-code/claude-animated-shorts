@@ -722,10 +722,10 @@ export const chainHD = () => ctex("chainHD", 256, 1024, (g) => {
 // ================= Baychimo set (Arctic 1931-69 + the airport) =================
 /** snow: near-white with soft blue wind ripples and sparse sastrugi strokes; 1024 px = 16 m */
 export const snowHD = () => ctex("snowHD", 1024, 1024, (g, r) => {
-  g.fillStyle = "#eef2f6"; g.fillRect(0, 0, 1024, 1024);
-  for (let i = 0; i < 70; i++) { // soft drifts
+  g.fillStyle = "#ece4d4"; g.fillRect(0, 0, 1024, 1024);
+  for (let i = 0; i < 70; i++) { // soft drifts (warm cream snow)
     const x = r() * 1024, y = r() * 1024, rx = U(r, 60, 200), ry = rx * U(r, 0.2, 0.4);
-    g.fillStyle = r() < 0.5 ? "rgba(214,226,240,0.45)" : "rgba(255,255,255,0.6)";
+    g.fillStyle = r() < 0.5 ? "rgba(196,206,236,0.5)" : "rgba(250,244,232,0.6)";
     wrap2(1024, 1024, x, y, rx, (xx, yy) => { g.beginPath(); g.ellipse(xx, yy, rx, ry, 0.1, 0, TAU); g.fill(); });
   }
   g.lineCap = "round";
@@ -737,11 +737,11 @@ export const snowHD = () => ctex("snowHD", 1024, 1024, (g, r) => {
 });
 /** pack ice: snow-dusted floes with blue-grey refrozen leads and dark crack seams; 1024 px = 40 m */
 export const iceHD = () => ctex("iceHD", 1024, 1024, (g, r) => {
-  g.fillStyle = "#e7eef5"; g.fillRect(0, 0, 1024, 1024);
+  g.fillStyle = "#e0e3e6"; g.fillRect(0, 0, 1024, 1024);
   // floe plates: polygons, slightly different whites
   for (let i = 0; i < 46; i++) {
     const x = r() * 1024, y = r() * 1024, R = U(r, 60, 150), n = 6 + Math.floor(r() * 4), a0 = r() * TAU;
-    const col = jit(r, r() < 0.3 ? "#dfe8f2" : "#f2f5f8", 0.03, 4, 0.2);
+    const col = jit(r, r() < 0.3 ? "#d2dcec" : "#ece6da", 0.03, 4, 0.2);
     wrap2(1024, 1024, x, y, R * 1.2, (xx, yy) => {
       g.beginPath();
       for (let k = 0; k < n; k++) { const a = a0 + (k / n) * TAU, rr2 = R * U(r, 0.7, 1.1); g.lineTo(xx + Math.cos(a) * rr2, yy + Math.sin(a) * rr2 * 0.9); }

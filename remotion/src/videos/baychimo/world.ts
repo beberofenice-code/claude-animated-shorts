@@ -45,7 +45,7 @@ const flakeTex = () => ctex("flake", 64, 64, (g) => {
 /** per-shot sun override (camera-relative az/el in degrees) */
 const SUN_SHOT: Record<number, { az?: number; el?: number }> = {
   2: { az: 110, el: 34 }, 7: { az: 60, el: 22 }, 14: { az: 120, el: 40 }, 15: { az: 150, el: 62 }, 16: { az: 120, el: 40 },
-  1: { az: 20, el: 7 }, 10: { az: -25, el: 6 }, 18: { az: 25, el: 7 }, 19: { az: -15, el: 7 },
+  1: { az: 8, el: 6 }, 10: { az: -7, el: 5 }, 18: { az: 25, el: 7 }, 19: { az: -6, el: 6 },
 };
 
 /** every lens position of the film looking at its subject, in PACK-LOCAL coordinates of that frame (props there that
@@ -193,7 +193,7 @@ export class World {
       sh.vertexShader = sh.vertexShader.replace("#include <common>", "#include <common>\nvarying vec2 vLP;")
         .replace("#include <begin_vertex>", "#include <begin_vertex>\nvLP = position.xz;");
       sh.fragmentShader = sh.fragmentShader.replace("#include <common>", ICE_DECL)
-        .replace("void main() {", "void main() {\n  float hd = hullD(vLP), iceN = vnoise(vLP * 0.045) * 18.0 + vnoise(vLP * 0.2) * 4.0;\n  if (hd + iceN < uIceR) discard;\n  float ld = abs(vnoise(vLP * 0.006) - 0.5) + 0.35 * abs(vnoise(vLP * 0.021 + 7.0) - 0.5) * 0.0;\n  if (hd > 60.0 && ld < 0.012 + 0.006 * vnoise(vLP * 0.05)) discard;");
+        .replace("void main() {", "void main() {\n  float hd = hullD(vLP), iceN = vnoise(vLP * 0.045) * 18.0 + vnoise(vLP * 0.2) * 4.0;\n  if (hd + iceN < uIceR) discard;\n  float ld = abs(vnoise(vLP * 0.006) - 0.5) + 0.35 * abs(vnoise(vLP * 0.021 + 7.0) - 0.5) * 0.0;\n  if (hd > 60.0 && ld < 0.02 + 0.01 * vnoise(vLP * 0.05)) discard;");
     };
     iceM.customProgramCacheKey = () => "packIce2";
     const ig = new THREE.PlaneGeometry(5600, 5600, 1, 1); ig.rotateX(-Math.PI / 2); ig.translate(0, ICE_Y, 0);
@@ -247,7 +247,7 @@ export class World {
     const land = new THREE.Mesh(lg, landM); land.receiveShadow = true; land.castShadow = false; this.arctic.add(land);
     const rock = lam("shoreRock", () => ({ color: "#6f655d" }));
     const sg2 = new THREE.PlaneGeometry(5000, 7, 1, 1); sg2.rotateX(-Math.PI / 2); sg2.translate(0, 0.42, SHORE - 2.2);
-    const shore = new THREE.Mesh(sg2, rock); shore.receiveShadow = true; this.arctic.add(shore);
+    void sg2; void rock;
     const mb = new Batch();
     for (let k = 0; k < 16; k++) { // distant mountains along the coast
       const g = new THREE.ConeGeometry(160 + (k % 4) * 60, 140 + (k % 5) * 70, 7, 1);
@@ -280,10 +280,10 @@ export class World {
     this.plane = new THREE.Group();
     const pb = new Batch();
     const red = lam("planeRed", () => ({ color: "#c8463c" })), yel = lam("planeYel", () => ({ color: "#e8b83a" })), blk = lam("planeBlk", () => ({ color: "#2a2a30" }));
-    pb.add(boxGeo(V(-0.6, -0.6, -3.5), V(0.6, 0.6, 2.6)), red);
-    pb.add(boxGeo(V(-0.4, -0.4, -5.6), V(0.4, 0.4, -3.4)), red);
-    pb.add(boxGeo(V(-6.2, 0.6, -0.6), V(6.2, 0.78, 1.0)), yel);
-    pb.add(boxGeo(V(-2.2, 0.05, -5.6), V(2.2, 0.15, -4.7)), yel);
+    pb.add(boxGeo(V(-0.6, -0.6, -3.5), V(0.6, 0.6, 2.6), 0, true), red);
+    pb.add(boxGeo(V(-0.4, -0.4, -5.6), V(0.4, 0.4, -3.4), 0, true), red);
+    pb.add(boxGeo(V(-6.2, 0.6, -0.6), V(6.2, 0.78, 1.0), 0, true), yel);
+    pb.add(boxGeo(V(-2.2, 0.05, -5.6), V(2.2, 0.15, -4.7), 0, true), yel);
     pb.add(boxGeo(V(-0.06, 0.15, -5.6), V(0.06, 1.5, -4.8)), yel);
     pb.add(boxGeo(V(-0.5, 0.3, 1.0), V(0.5, 0.62, 2.0)), lam("planeGlass", () => ({ color: "#33496a" })));
     for (const s of [-1, 1]) { pb.add(boxGeo(V(s * 1.0 - 0.15, -1.45, -1.2), V(s * 1.0 + 0.15, -1.3, 1.6)), blk); pb.add(beamBetween(V(s * 0.5, -0.5, 0.2), V(s * 1.0, -1.35, 0.2), 0.08, true), blk); }
@@ -328,6 +328,8 @@ export class World {
       const s = new THREE.Shape(); s.moveTo(-STR, -r); s.lineTo(STR, -r); s.absarc(STR, 0, r, -Math.PI / 2, Math.PI / 2, false); s.lineTo(-STR, r); s.absarc(-STR, 0, r, Math.PI / 2, Math.PI * 1.5, false);
       const g = new THREE.ExtrudeGeometry(s, { depth: y, bevelEnabled: false, curveSegments: 20 }); g.rotateX(-Math.PI / 2); g.translate(A[0], 0, A[2]); return g;
     };
+    for (const z of [14 - 0.02, -25 + 0.02]) shell.add(boxGeo(V(A[0] - 24, 2.6, A[2] + z - 0.06), V(A[0] + 24, 3.2, A[2] + z + 0.06)), lam("hallStripe", () => ({ color: "#2f6fa8" })));
+    for (const x of [-16, -6, 6, 16]) shell.add(boxGeo(V(A[0] + x - 1.4, 0, A[2] + 13.9), V(A[0] + x + 1.4, 2.4, A[2] + 14.02)), lam("hallDoor", () => ({ color: "#6c7a88" })));
     ab.add(stadium(RAD + W2 + 0.15, 0.42), lam("carBase", () => ({ color: "#5a5e66" })));
     ab.add(stadium(RAD - W2, 0.95), steel);
     ab.build(this.airport); shell.build(this.airport, false);
@@ -479,7 +481,7 @@ export class World {
     for (const m of this.ship.woodDeck) m.visible = !snowy;
     this.ship.tarpFore.visible = id !== 2; this.ship.bales.visible = id === 2;
     this.ship.ladder.visible = id >= 9 && id !== 10;
-    this.ship.glowMesh.visible = SH.lit > 0.01; this.ship.glow.color.setRGB(3.2 * SH.lit, 2.0 * SH.lit, 0.9 * SH.lit);
+    this.ship.glowMesh.visible = SH.lit > 0.01; this.ship.glow.color.setRGB(5.0 * SH.lit, 3.1 * SH.lit, 1.2 * SH.lit);
     this.ship.flag.visible = id === 13 && f < F_FLAG_DROP;
     this.ship.flag.position.set(4.3, DECK + 0.6, -6.4);
     // ---- shore set ----
@@ -489,7 +491,7 @@ export class World {
     this.plane.visible = E.plane > 0 || (E.plane === 0 && id === 4);
     if (this.plane.visible) {
       const u = E.plane, ss = id === 17;
-      const a = ss ? V(-40, 24, 100) : V(26, 1.6, 40), b = ss ? V(70, 30, 150) : V(-34, 42, -95), mid = ss ? V(14, 22, 122) : V(0, 10, -15);
+      const a = ss ? V(-20, 24, 100) : V(26, 1.6, 40), b = ss ? V(90, 30, 150) : V(-34, 42, -95), mid = ss ? V(34, 22, 122) : V(0, 10, -15);
       const p0 = a.clone().lerp(mid, u).lerp(mid.clone().lerp(b, u), u);
       const p1 = a.clone().lerp(mid, u + 0.01).lerp(mid.clone().lerp(b, u + 0.01), u + 0.01);
       this.plane.position.copy(p0); this.plane.lookAt(p1); this.plane.rotateZ(ss ? -0.25 : 0.15);

@@ -312,7 +312,7 @@ export const stage = (id: number, t: number, cam: CamInfo, P: Pack, S: Ship, E: 
         for (const [i, dx, dz] of [[0, -5.5, 3], [1, -4.2, 5.5], [2, 6.5, 4], [3, 8, 2.5]] as const) stander(out, cam, crewWho(i), t, HUT[0] + dx, LAND_Y, HUT[2] + dz, "neutral");
       } else {
         const ex: Expr[] = ["shock", "shock", "nervous", "shock"];
-        [[3.5, 4.0], [2.3, 3.4], [4.7, 3.2], [1.4, 2.2]].forEach(([dx, dz], i) => stander(out, cam, crewWho(i), t, HUT[0] + dx, LAND_Y, HUT[2] + dz, ex[i]));
+        [[3.6, 4.2], [2.7, 3.5], [4.5, 3.4], [3.3, 2.4]].forEach(([dx, dz], i) => stander(out, cam, crewWho(i), t, HUT[0] + dx, LAND_Y, HUT[2] + dz, ex[i]));
       }
       break;
     }
@@ -331,7 +331,7 @@ export const stage = (id: number, t: number, cam: CamInfo, P: Pack, S: Ship, E: 
       break;
     }
     case 8: { // deadpan at the hut
-      [[2.5, 4.4], [1.2, 3.7], [3.8, 3.8], [0.4, 2.8], [4.8, 3.0]].forEach(([dx, dz], i) =>
+      [[2.6, 4.4], [1.7, 3.7], [3.5, 3.8], [2.2, 2.6], [3.2, 2.7]].forEach(([dx, dz], i) =>
         stander(out, cam, i === 0 ? { i: 90, o: CAPTAIN, okey: "capt" } : crewWho(i), t, HUT[0] + dx, LAND_Y, HUT[2] + dz, i === 0 ? "stern" : "neutral"));
       break;
     }
@@ -362,7 +362,7 @@ export const stage = (id: number, t: number, cam: CamInfo, P: Pack, S: Ship, E: 
         const k = clamp01((f - 1122 - i * 24) / 46), lad = onShip(P, S, [5.05 + 0.2 * (1 - k), ICE_Y + k * (DECK + 0.6 - ICE_Y), -4]);
         if (f > 1122 + i * 24 + 52) continue; // inside
         if (k <= 0) stander(out, cam, { i: 61 + i, o: HUNTERS[i + 1], okey: `h${i + 1}` }, t, lad[0] + 1.4 + i * 1.1, ICE_Y, lad[2] - 1.2 - i * 0.9, "neutral");
-        else out.places.push(person(cam, { i: 61 + i, o: HUNTERS[i + 1], okey: `h${i + 1}` }, lad[0] + 0.25, lad[1] - 0.3, lad[2] + 0.1, { side: false, mirror: false }, { mode: "stand", expr: "stern", blink: 0, wave: 0.9 }, {}));
+        else out.places.push(person(cam, { i: 61 + i, o: HUNTERS[i + 1], okey: `h${i + 1}` }, lad[0] + 0.12, lad[1] - 0.3, lad[2], { side: false, mirror: false }, { mode: "stand", expr: "stern", blink: 0, wave: 0.9 }, {}));
       }
       break;
     }
@@ -371,7 +371,7 @@ export const stage = (id: number, t: number, cam: CamInfo, P: Pack, S: Ship, E: 
       const rail = onShip(P, S, [3.7, DECK, -6]);
       if (!fall) stander(out, cam, { i: 80, o: SALVAGER, okey: "salv" }, t, rail[0], rail[1], rail[2], at(t, 1291) ? "grin" : "smile", { wave: at(t, 1260) ? 0.8 : undefined });
       else {
-        const u = clamp01((f - F_SHOVE - 1) / 16), land: V3 = [12.8, ICE_Y, -9.6];
+        const u = clamp01((f - F_SHOVE - 1) / 22), land: V3 = [12.8, ICE_Y, -9.6];
         const x = rail[0] + (land[0] - rail[0]) * u, z = rail[2] + (land[2] - rail[2]) * u, y = rail[1] + (land[1] - rail[1]) * u + 3.2 * u * (1 - u);
         if (u < 1) out.places.push(person(cam, { i: 80, o: SALVAGER, okey: "salv" }, x, y, z, { side: false, mirror: false }, { mode: "fall", expr: "shock", tilt: q(-40 - 220 * u, 4), blink: 0 }, {}));
         else {
@@ -379,24 +379,24 @@ export const stage = (id: number, t: number, cam: CamInfo, P: Pack, S: Ship, E: 
           blob(out, land[0], ICE_Y, land[2], 1.1);
           const su = q((t * 0.9) % 1, 30);
           out.fx.push({ key: `stars${su}`, cw: 420, ch: 210, draw: (p) => fxStars(p, su), x: land[0], y: ICE_Y + 1.35, z: land[2], w: 0.75, h: 0.375 });
-          const pu = (f - F_SHOVE - 17) / 14;
+          const pu = (f - F_SHOVE - 23) / 14;
           if (pu >= 0 && pu < 1) out.fx.push({ key: `puff${q(pu, 30)}`, cw: 400, ch: 400, draw: (p) => fxPuff(p, q(pu, 30)), x: land[0], y: ICE_Y + 0.5, z: land[2] + 0.2, w: 2.6, h: 2.6, soft: true });
         }
       }
       break;
     }
     case 15: { // the airport: bored travellers, nobody picks it up
-      const spots: [number, number, Expr][] = [[-4.8, -3.3, "neutral"], [-1.6, 3.4, "stern"], [2.6, -3.5, "neutral"], [4.0, 3.3, "smile_closed"], [-6.0, 0.4, "neutral"], [6.1, 0.8, "stern"]];
+      const spots: [number, number, Expr][] = [[-4.8, -3.3, "neutral"], [-1.6, 3.4, "stern"], [5.4, -3.0, "neutral"], [4.0, 3.3, "smile_closed"], [-6.0, 0.4, "neutral"], [6.1, 0.8, "stern"]];
       spots.forEach(([x, z, e], i) => stander(out, cam, { i: 100 + i, o: TRAV[i], okey: `t${i}` }, t, AIR[0] + x, 0, AIR[2] + z, e, { prop: i === 2 ? "suitcase" : null, look: i % 2 ? 1 : -1 }));
       break;
     }
     case 17: { // spotted again and again
       if (t < 1734 / FPS) { dogTeam(out, cam, t, [62, ICE_Y, 44], 0.5, false); stander(out, cam, { i: 70, o: SLEDDER, okey: "sledder" }, t, 61.2, ICE_Y, 45.2, "shock", { wave: 0.9 }); }
-      else if (t < 1746 / FPS) for (let i = 0; i < 2; i++) stander(out, cam, { i: 62 + i, o: HUNTERS[i + 2], okey: `h${i + 2}` }, t, 124.2 - i * 1.4, ICE_Y, 101.6 + i * 0.5, i ? "shock" : "grin", { wave: i ? undefined : 0.8 });
+      else if (t < 1746 / FPS) for (let i = 0; i < 2; i++) stander(out, cam, { i: 62 + i, o: HUNTERS[i + 2], okey: `h${i + 2}` }, t, 124.2 - i * 0.6, ICE_Y, 101.4 - i * 1.9, i ? "shock" : "grin", { wave: i ? undefined : 0.8 });
       break;
     }
     case 18: { // 1969: the expedition in orange
-      [[-9, -26], [-7.4, -27.2], [-5.6, -25.6], [-4.0, -27.8]].forEach(([x, z], i) =>
+      [[-8.2, -26.4], [-7.0, -27.4], [-5.6, -26.2], [-6.4, -28.6]].forEach(([x, z], i) =>
         stander(out, cam, { i: 120 + i, o: PARTY[i], okey: `m${i}` }, t, x, ICE_Y, z, at(t, 1781) ? (i % 2 ? "shock" : "grin") : "neutral", { wave: i === 1 && at(t, 1781) ? 0.85 : undefined }));
       break;
     }
