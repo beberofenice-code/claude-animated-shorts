@@ -179,7 +179,8 @@ export class World {
         .replace("#include <lights_fragment_end>", "#include <lights_fragment_end>\n  reflectedLight.directDiffuse = diffuseColor.rgb * mix(wShade, vec3(1.0), sunVis);\n  reflectedLight.indirectDiffuse = vec3(0.0);");
     };
     waterM.customProgramCacheKey = () => "sea1";
-    const wg = new THREE.PlaneGeometry(9000, 9000); wg.rotateX(-Math.PI / 2);
+    waterM.polygonOffset = true; waterM.polygonOffsetFactor = 2; waterM.polygonOffsetUnits = 8; // never wins a depth tie against the ice
+    const wg = new THREE.PlaneGeometry(9000, 9000, 96, 96); wg.rotateX(-Math.PI / 2);
     const wm = new THREE.Mesh(wg, waterM); wm.receiveShadow = true; this.arctic.add(wm);
 
     // ---- pack ice (rides with the pack frame) ----
@@ -196,7 +197,7 @@ export class World {
         .replace("void main() {", "void main() {\n  float hd = hullD(vLP), iceN = vnoise(vLP * 0.045) * 18.0 + vnoise(vLP * 0.2) * 4.0;\n  if (hd + iceN < uIceR) discard;\n  float ld = abs(vnoise(vLP * 0.006) - 0.5) + 0.35 * abs(vnoise(vLP * 0.021 + 7.0) - 0.5) * 0.0;\n  if (hd > 60.0 && ld < 0.02 + 0.01 * vnoise(vLP * 0.05)) discard;");
     };
     iceM.customProgramCacheKey = () => "packIce2";
-    const ig = new THREE.PlaneGeometry(5600, 5600, 1, 1); ig.rotateX(-Math.PI / 2); ig.translate(0, ICE_Y, 0);
+    const ig = new THREE.PlaneGeometry(5600, 5600, 96, 96); ig.rotateX(-Math.PI / 2); ig.translate(0, ICE_Y, 0);
     const im = new THREE.Mesh(ig, iceM); im.receiveShadow = true; this.pack.add(im);
     // floes, ridges and icebergs: instanced chunks, culled off every sight line
     const rays = sightLines(true);
