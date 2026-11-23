@@ -489,7 +489,7 @@ export class World {
     this.plane.visible = E.plane > 0 || (E.plane === 0 && id === 4);
     if (this.plane.visible) {
       const u = E.plane, ss = id === 17;
-      const a = ss ? V(-30, 30, 160) : V(26, 1.6, 40), b = ss ? V(150, 36, 70) : V(-34, 42, -95), mid = ss ? V(60, 34, 120) : V(0, 10, -15);
+      const a = ss ? V(-40, 24, 100) : V(26, 1.6, 40), b = ss ? V(70, 30, 150) : V(-34, 42, -95), mid = ss ? V(14, 22, 122) : V(0, 10, -15);
       const p0 = a.clone().lerp(mid, u).lerp(mid.clone().lerp(b, u), u);
       const p1 = a.clone().lerp(mid, u + 0.01).lerp(mid.clone().lerp(b, u + 0.01), u + 0.01);
       this.plane.position.copy(p0); this.plane.lookAt(p1); this.plane.rotateZ(ss ? -0.25 : 0.15);

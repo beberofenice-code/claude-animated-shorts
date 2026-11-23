@@ -337,7 +337,7 @@ export const stage = (id: number, t: number, cam: CamInfo, P: Pack, S: Ship, E: 
     }
     case 9: {
       if (t < 905 / FPS) { // the party sets out across the ice toward her
-        for (let i = 0; i < 6; i++) walker(out, cam, crewWho(i), t, [4 + (i % 3) * 1.3, ICE_Y, -40 - Math.floor(i / 3) * 2.2], 0, 1, 1.25, 876 / FPS, "stern");
+        for (let i = 0; i < 6; i++) walker(out, cam, crewWho(i), t, [9 + (i % 3) * 1.3, ICE_Y, -37.5 - Math.floor(i / 3) * 2.2], -0.25, 1, 1.25, 876 / FPS, "stern");
       } else if (t < 953 / FPS) { // carrying the furs off down the ladder side
         for (let i = 0; i < 4; i++) walker(out, cam, crewWho(i), t, [6.0 + i * 0.4, ICE_Y, -3.2 - i * 1.6], 1, -0.35, 0.9, 905 / FPS - i * 0.6, "neutral", "bale");
         const d = onShip(P, S, [3.6, DECK, -4.4]); stander(out, cam, crewWho(5), t, d[0], d[1], d[2], "neutral", { prop: "bale" });
@@ -391,7 +391,7 @@ export const stage = (id: number, t: number, cam: CamInfo, P: Pack, S: Ship, E: 
       break;
     }
     case 17: { // spotted again and again
-      if (t < 1734 / FPS) { dogTeam(out, cam, t, [62, ICE_Y, 44], 0.5, false); stander(out, cam, { i: 70, o: SLEDDER, okey: "sledder" }, t, 60.4, ICE_Y, 44.9, "shock", { wave: 0.9 }); }
+      if (t < 1734 / FPS) { dogTeam(out, cam, t, [62, ICE_Y, 44], 0.5, false); stander(out, cam, { i: 70, o: SLEDDER, okey: "sledder" }, t, 61.2, ICE_Y, 45.2, "shock", { wave: 0.9 }); }
       else if (t < 1746 / FPS) for (let i = 0; i < 2; i++) stander(out, cam, { i: 62 + i, o: HUNTERS[i + 2], okey: `h${i + 2}` }, t, 124.2 - i * 1.4, ICE_Y, 101.6 + i * 0.5, i ? "shock" : "grin", { wave: i ? undefined : 0.8 });
       break;
     }

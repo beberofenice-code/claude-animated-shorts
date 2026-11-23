@@ -265,9 +265,9 @@ const S15b = (f: number) => dolly([AIR[0] - 1.5, 3.0, AIR[2] - 9.5], [AIR[0] + 2
 const S16a = (f: number) => dolly([140, 360, -40], [145, 0, 115], pushK(f, 1603, 0.0012), { fov: 44 });
 const S16b = (f: number) => { const p = packAt(16, f); const c = packPt(p, [10.5, 1.7, -10.5]), l = packPt(p, [4.6, 1.8, -4.5]); return dolly(c, l, pushK(f, 1668, 0.003, 0.007, 30), { fov: 38, roll: -0.035 }); };
 // shot 17: montage of spotters, each with her drifting behind
-const S17a = (f: number) => dolly([60, 1.7, 40], [80, 4, 140], pushK(f, 1714, 0.003), { fov: 40 });
+const S17a = (f: number) => dolly([57.5, 1.8, 35], [72, 4, 130], pushK(f, 1714, 0.003), { fov: 40 });
 const S17b = (f: number) => dolly([130, 1.6, 100], [40, 5, 120], pushK(f, 1734, 0.003), { fov: 40, roll: 0.03 });
-const S17c = (f: number) => dolly([20, 2.5, 60], [60, 14, 110], pushK(f, 1746, 0.003), { fov: 44 });
+const S17c = (f: number) => dolly([42, 3, 62], [12, 12, 122], pushK(f, 1746, 0.003), { fov: 44 });
 // shot 18 (golden): the 1969 party in orange, the ship locked in the ice
 const S18a = (f: number) => dolly([-14, 2.0, -40], [-1, 4.2, -6], pushK(f, 1760, 0.0025, 0.006, 30), { fov: 40 });
 const S18b = (f: number) => dolly([-6, 1.4, -32], [0, 6, 0], pushK(f, 1808, 0.0022), { fov: 40, roll: -0.03 });
