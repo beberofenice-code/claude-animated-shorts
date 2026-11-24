@@ -60,7 +60,7 @@ const Inner: React.FC<{ id: number; kit: Kit }> = ({ id, kit }) => {
     grade: new GradeEffect(GRADES.day, GRADE_STRENGTH.day),
     grain: new GrainEffect({ amount: 0.025, cellPx: 1.5 }), // film grain, OFF by default (inputProps post.grain): the reference measures no grain and it quadruples the file size
   }), [camera, scene]);
-  useEffect(() => () => fx.ink.dispose(), [fx]);
+  useEffect(() => () => { const d = (fx.ink as unknown as { dispose?: () => void }).dispose; if (typeof d === "function") d.call(fx.ink); }, [fx]);
   const post = useMemo(() => {
     const list: [boolean, object][] = [[on.ink, fx.ink], [on.lens && on.pre, fx.lens.pre], [on.lens, fx.lens.main], [on.bloom, fx.bloom], [true, fx.tone], [on.grade, fx.grade], [on.grain, fx.grain]];
     const kids = list.filter(([k]) => k).map(([, o], i) => <primitive key={i} object={o} dispose={null} />);

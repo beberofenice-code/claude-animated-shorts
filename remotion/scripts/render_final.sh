@@ -2,7 +2,7 @@
 # renders the 2K final in 4 chunks (resumable: skips finished chunks), then concatenates
 cd "$(dirname "$0")/.."
 mkdir -p out/final
-for r in 0-524 525-1049 1050-1574 1575-2099; do
+for r in $(seq 0 210 1890 | awk '{print $1"-"$1+209}'); do
   f=out/final/part_${r}.mp4
   [ -s "$f" ] && continue
   npx remotion render src/index.ts PelikulaShort "$f.tmp.mp4" --frames=$r --scale 1.3333333333333333 --concurrency 2 \
