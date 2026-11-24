@@ -621,8 +621,14 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
       }
       if (o.sash) p.band([[tcx - 1.3 * T.a, torsoBot - 0.32 * HH], [tcx + 1.3 * T.a, torsoBot - 0.32 * HH]], o.sash, 0.13 * HH, 1.8 * u);
       if (o.motif === "barong") {
-        p.poly([[tcx - 0.42 * T.a, chin], [tcx + 0.42 * T.a, chin], [tcx + 0.3 * T.a, torsoBot], [tcx - 0.3 * T.a, torsoBot]], shade(o.jacket, 0.92), 0);
-        for (let i = 0; i < 5; i++) for (const s of [-1, 1]) p.ell(tcx + s * 0.18 * T.a, chin + 0.1 * HH + i * 0.17 * HH, 2.6 * u, 3.6 * u, null, 1.2 * u);
+        // sheer pina cloth: the camisa shows through as a soft darker vest shape; embroidery runs down both sides of a short placket
+        p.poly([[tcx - 0.62 * T.a, chin + 0.12 * HH], [tcx + 0.62 * T.a, chin + 0.12 * HH], [tcx + 0.55 * T.a, torsoBot - 0.05 * HH], [tcx - 0.55 * T.a, torsoBot - 0.05 * HH]], mix(o.jacket, "#c9b98f", 0.28), 0);
+        for (const s of [-1, 1]) for (let i = 0; i < 7; i++) {
+          const y = chin + 0.06 * HH + i * 0.13 * HH, x = tcx + s * (0.2 + 0.08 * Math.sin(i * 1.7)) * T.a;
+          p.stroke([[x - 5 * u, y], [x, y - 4 * u], [x + 5 * u, y]], 1.3 * u, "#a8946a");
+          p.dot(x + s * 7 * u, y + 3 * u, 1.6 * u, "#a8946a");
+        }
+        for (let i = 0; i < 3; i++) p.dot(tcx, chin + 0.06 * HH + i * 0.1 * HH, 1.8 * u, "#8a7650");
       }
       if (o.motif === "vest") for (const s of [-1, 1]) p.poly([[tcx + s * 0.12 * T.a, chin - 0.05 * HH], [tcx + s * 1.2 * T.a, chin - 0.05 * HH], [tcx + s * 1.2 * T.a, torsoBot + 0.05 * HH], [tcx + s * 0.32 * T.a, torsoBot + 0.05 * HH]], "#3a2c28", 1.6 * u);
       if (o.motif === "stripe") for (let i = 0; i < 3; i++) p.band([[tcx - 1.3 * T.a, chin + (0.18 + 0.24 * i) * HH], [tcx + 1.3 * T.a, chin + (0.18 + 0.24 * i) * HH]], shade(o.jacket, 0.78), 0.07 * HH, 0);

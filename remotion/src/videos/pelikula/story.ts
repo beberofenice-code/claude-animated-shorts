@@ -44,7 +44,7 @@ export const SHOTS: ShotDef[] = [
   { id: 15, a: 1363, b: 1421, light: "golden", set: "home", beat: "why", sunAz: 120, sunEl: 32 },
   { id: 16, a: 1421, b: 1651, light: "golden", set: "home", beat: "handaan", sunAz: 140, sunEl: 32 },
   { id: 17, a: 1651, b: 1766, light: "dark", set: "theater", beat: "cinema", era: "new" },
-  { id: 18, a: 1766, b: 1819, light: "golden", set: "plaza", beat: "hot", sunAz: 20, sunEl: 34 },
+  { id: 18, a: 1766, b: 1819, light: "golden", set: "plaza", beat: "hot", sunAz: 160, sunEl: 55 },
   { id: 19, a: 1819, b: 1977, light: "night", set: "home", beat: "phone", sunAz: 160, sunEl: 20 },
   { id: 20, a: 1977, b: TOTAL, light: "day", set: "plaza", beat: "election", sunAz: 110 },
 ];
@@ -72,7 +72,7 @@ export const W = {
   halalan: 1988 / 30, sino: 2054 / 30, bida2: 2067 / 30,
 };
 /** film cans in the 1950s stack: how many have landed by time t (they fly in faster and faster: "350 a year") */
-export const CAN_H = 0.32;
+export const CAN_H = 0.2;
 export const cansAt = (t: number) => Math.floor(Math.max(0, Math.min(34, (t - W.tatlong + 0.2) ** 1.6 * 4.2)));
 export const STACK_PH: V3 = at(STU, -1.6, 0, 0);
 export const STACK_JP: V3 = at(STU, 1.9, 0, -0.6);
@@ -232,7 +232,7 @@ export const DOF: Dof[] = [
   { f: 1281, cInf: 9 }, { f: 1318, cInf: 13 },
   { f: 1363, cInf: 0 }, { f: 1421, cInf: 6 }, { f: 1464, cInf: 15 }, { f: 1512, cInf: 11 }, { f: 1574, cInf: 14 }, { f: 1601, cInf: 12 },
   { f: 1651, cInf: 8 }, { f: 1697, cInf: 13 },
-  { f: 1766, cInf: 10 }, { f: 1819, cInf: 14 }, { f: 1977, cInf: 0 }, { f: 2054, cInf: 12 },
+  { f: 1766, cInf: 4 }, { f: 1819, cInf: 14 }, { f: 1977, cInf: 0 }, { f: 2054, cInf: 12 },
 ];
 export const dofAt = (f: number) => {
   let i = 0; while (i + 1 < DOF.length && f >= DOF[i + 1].f) i++;

@@ -478,13 +478,13 @@ type Style = { wall: string; shutter: string; roof: string; timber?: boolean; br
 // round 3: saturation -35 % on every wall (neutral warm grey / beige; the salmon became a warm greige)
 // round 4: the pale greiges still read lavender-grey in shade -> a muted brick / cream / ochre / terracotta spread
 const STYLES: Style[] = [
-  { wall: "#ecdab2", shutter: "#3f6fb5", roof: "#d27a62" },              // cream
-  { wall: "#d8a95f", shutter: "#2f6a43", roof: "#b8644f" },              // ochre
-  { wall: "#c47a5c", shutter: "#2f5f6a", roof: "#8f97a8" },              // muted brick-red plaster
+  { wall: "#f4e3a1", shutter: "#3f6fb5", roof: "#d27a62" },              // cream
+  { wall: "#9fd3c7", shutter: "#2f6a43", roof: "#b8644f" },              // ochre
+  { wall: "#f2b8b0", shutter: "#2f5f6a", roof: "#8f97a8" },              // muted brick-red plaster
   { wall: "#efdcb8", shutter: "#2f5f6a", roof: "#c9775a", timber: true }, // cream timber frame
-  { wall: "#ddbd78", shutter: "#5a3b2a", roof: "#d27a62" },              // straw ochre
-  { wall: "#cc9a6c", shutter: "#3f6fb5", roof: "#8e7aa0" },              // terracotta sand
-  { wall: "#e2c49a", shutter: "#8c3b4a", roof: "#c9775a" },              // warm sandstone
+  { wall: "#c9e3a8", shutter: "#5a3b2a", roof: "#d27a62" },              // straw ochre
+  { wall: "#f3c98b", shutter: "#3f6fb5", roof: "#8e7aa0" },              // terracotta sand
+  { wall: "#b8d4ee", shutter: "#8c3b4a", roof: "#c9775a" },              // warm sandstone
   { wall: "#e3d2b8", shutter: "#2f6a43", roof: "#8f97a8", brick: true },
 ];
 const roofMat = (col: string) => lam("roof" + col, () => ({ map: roofHD(col, col === "#8f97a8"), side: THREE.DoubleSide }));

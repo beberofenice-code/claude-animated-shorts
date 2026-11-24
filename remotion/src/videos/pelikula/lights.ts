@@ -45,8 +45,8 @@ export const LIGHTS: Record<LightName, LightPreset> = {
   // inside the dark cinema: the only key is the screen (cool white), everything else falls to deep violet-blue
   dark: {
     az: 180, el: 12,
-    lit: [1.05, 1.1, 1.25], shade: [0.07, 0.07, 0.15], lift: [0.02, 0.02, 0.06], lambert: 0.5, sideK: 0.9, term: 0.25,
-    charTint: [0.86, 0.9, 1.05], charShade: 0.72, charGrad: 0.16, bodyGrad: 0.32, sideTint: [0.6, 0.62, 0.9],
+    lit: [0.8, 0.85, 1.0], shade: [0.04, 0.04, 0.1], lift: [0.015, 0.015, 0.05], lambert: 0.5, sideK: 0.9, term: 0.25,
+    charTint: [0.78, 0.82, 0.98], charShade: 0.66, charGrad: 0.16, bodyGrad: 0.32, sideTint: [0.6, 0.62, 0.9],
     blob: [0.5, 0.5, 0.7], actorShadow: false,
     top: "#0a0b18", hor: "#14152a", skyCurve: [0, 0.5, 0.6], fog: "#120f24", fogNear: 14, fogFar: 60, sunDisc: "#000000",
     sunCol: "#dfe8ff", sunI: 2.0, sky: "#20223a", ground: "#140f1c", hemiI: 0.2,

@@ -63,7 +63,7 @@ const figure = (g: CanvasRenderingContext2D, o: Outfit, x: number, y: number, s:
 
 // the cast every set shares (toon outfits)
 export const HERO: Outfit = { jacket: "#f4efe4", pants: "#2c3550", boots: "#3a2a22", hat: "bandana", hair: "#22191a", band: "#d6312e", motif: "vest", skin: "#e9b98f", moustache: "#2a1d1a", build: "stout" };
-export const HERO_PRES: Outfit = { ...HERO, dsash: "#f2c33c" };
+export const HERO_PRES: Outfit = { ...HERO, jacket: "#f6f0dc", motif: "barong" };
 export const VILLAIN: Outfit = { jacket: "#3a3346", pants: "#2a2534", boots: "#1d1a22", hat: "hair", hair: "#1a1418", moustache: "#15101a", skin: "#d9a47e", build: "stout" };
 export const LEADING: Outfit = { jacket: "#f3d9e3", pants: "#3b3f52", boots: "#7a4b3a", hat: "hair", hair: "#2a1d1a", dress: "#d9567a", skin: "#f1c7a3" };
 
@@ -74,12 +74,17 @@ export const heroPoster = (empty: boolean) => ctex("posterHero" + (empty ? "E" :
   // skyline silhouette + explosion
   g.fillStyle = "#4a1f2c"; for (let i = 0; i < 12; i++) { const h = 80 + ((i * 37) % 90); g.fillRect(i * 56, 768 - h - 120, 50, h + 120); }
   for (const [x, y, rr, c] of [[120, 560, 90, "#fff0a8"], [180, 520, 60, "#ffd36b"], [520, 590, 80, "#fff0a8"]] as const) { g.fillStyle = c; g.beginPath(); g.arc(x, y, rr, 0, 7); g.fill(); }
-  if (!empty) figure(g, HERO, 320 - 300 * 0.78, 768 - 975 * 0.78 + 10, 0.78, "stern", { pose: "fist", pk: 1, facing: 0 });
-  else { // stepped out: white cut-out silhouette with a torn edge
-    g.save(); g.translate(320 - 300 * 0.78, 768 - 975 * 0.78 + 10); g.scale(0.78, 0.78);
+  const S = 0.56, X = 320 - 300 * S, Y = 768 - 975 * S - 40;
+  if (!empty) figure(g, HERO, X, Y, S, "stern", { pose: "fist", pk: 1, facing: 0 });
+  else { // stepped out: a dark hole in his shape, torn paper rim
     const tmp = document.createElement("canvas"); tmp.width = 600; tmp.height = 1000;
     bodyFront(new Pen(tmp.getContext("2d")!), HERO, { mode: "stand", expr: "stern", light: -2.1, seed: 3, pose: "fist", pk: 1 });
-    const tg = tmp.getContext("2d")!; tg.globalCompositeOperation = "source-in"; tg.fillStyle = "#fbf6ea"; tg.fillRect(0, 0, 600, 1000);
+    const tg = tmp.getContext("2d")!; tg.globalCompositeOperation = "source-in";
+    const rim = document.createElement("canvas"); rim.width = 600; rim.height = 1000; const rg = rim.getContext("2d")!; rg.drawImage(tmp, 0, 0);
+    rg.globalCompositeOperation = "source-in"; rg.fillStyle = "#fbf6ea"; rg.fillRect(0, 0, 600, 1000);
+    tg.fillStyle = "#1a1220"; tg.fillRect(0, 0, 600, 1000);
+    g.save(); g.translate(X, Y); g.scale(S, S);
+    for (const [dx, dy] of [[-9, 0], [9, 0], [0, -9], [0, 9], [-7, 7], [7, -7], [7, 7], [-7, -7]]) g.drawImage(rim, dx, dy);
     g.drawImage(tmp, 0, 0); g.restore();
   }
   // frame
@@ -309,6 +314,8 @@ export const lechonTex = () => ctex("lechon", 512, 256, (g) => {
   p.ell(250, 128, 150, 40, "#e0894a", 0);
   p.ell(410, 135, 52, 46, "#c8642e", 7);                    // head
   p.ell(452, 140, 14, 12, "#e2453c", 4);                    // apple
+  p.poly([[380, 98], [392, 70], [408, 96]], "#b8562a", 5);   // ear
+  for (const x of [150, 210, 300, 350]) p.poly([[x, 205], [x + 14, 232], [x + 30, 205]], "#b8562a", 5); // trotters
   p.ell(400, 120, 6, 6, INK, 0);
   p.poly([[90, 110], [60, 80], [96, 96]], "#c8642e", 5);    // tail curl
   for (let i = 0; i < 6; i++) p.stroke([[150 + i * 35, 105], [140 + i * 35, 190]], 3, "rgba(120,50,20,.6)");
@@ -317,7 +324,7 @@ export const foodTex = (kind: number) => ctex("food" + kind, 256, 160, (g) => {
   const p = new Pen(g);
   p.ell(128, 120, 112, 30, "#f7f4ec", 5);
   if (kind === 0) { p.ell(128, 92, 70, 50, "#d9785a", 5); p.ell(128, 70, 40, 18, "#f2a08f", 0); }          // ham
-  else if (kind === 1) { p.ell(128, 80, 54, 54, "#e2453c", 5); p.ell(110, 64, 16, 10, "#ff8a7a", 0); }      // queso de bola
+  else if (kind === 1) { p.ell(128, 80, 54, 54, "#e2453c", 5); p.ell(110, 64, 16, 10, "#ff8a7a", 0); p.poly([[128, 80], [182, 80], [176, 112]], "#f6d36a", 4); p.poly([[150, 118], [200, 112], [196, 130], [154, 134]], "#f6d36a", 4); } // queso de bola, a wedge cut
   else if (kind === 2) { for (let i = 0; i < 9; i++) p.stroke([[60 + i * 14, 112], [80 + i * 12, 80], [70 + i * 15, 100]], 5, "#f3cf7a"); p.ell(150, 88, 12, 8, "#e2453c", 2); } // pancit/spaghetti
   else { p.ell(128, 100, 80, 26, "#f3e3c2", 4); for (let i = 0; i < 5; i++) p.ell(80 + i * 24, 92, 9, 7, "#fff6d8", 2); }                   // rice
 });

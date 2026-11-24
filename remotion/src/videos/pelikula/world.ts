@@ -182,11 +182,13 @@ export class World {
     const ballot = new THREE.Group(), bb = new Batch();
     bb.add(boxGeo(V(-5.6, 0.72, -2.2), V(-3.2, 0.78, -0.9)), flat("#8a5a34"));
     for (const [x, z] of [[-5.5, -2.1], [-3.3, -2.1], [-5.5, -1.0], [-3.3, -1.0]]) bb.add(boxGeo(V(x - 0.04, 0, z - 0.04), V(x + 0.04, 0.72, z + 0.04)), flat("#6a4a2e"));
-    bb.add(boxGeo(V(-4.75, 0.78, -1.85), V(-4.05, 1.4, -1.25)), flat("#eef2f6"));
-    bb.add(boxGeo(V(-4.7, 1.4, -1.6), V(-4.1, 1.42, -1.5)), flat("#241726"));
+    bb.add(boxGeo(V(-4.75, 0.78, -1.85), V(-4.05, 1.3, -1.25)), flat("#8a5a34"));
+    bb.add(boxGeo(V(-4.8, 1.3, -1.9), V(-4.0, 1.38, -1.2)), flat("#c9ccd2"));
+    bb.add(boxGeo(V(-4.6, 1.38, -1.6), V(-4.2, 1.4, -1.5)), flat("#141018"));
+    bb.add(boxGeo(V(-4.6, 0.95, -1.251), V(-4.2, 1.15, -1.24)), flat("#f2c33c"));
     bb.add(boxGeo(V(-5.9, 0, -3.2), V(-2.9, 2.4, -3.1)), flat("#fbf6ea")); // booth screen behind
     bb.build(ballot); G.add(ballot); d.ballot = ballot;
-    G.add(plane(1.4, 0.7, lam("flagPHb", () => ({ map: flagPH(), side: THREE.DoubleSide })), -4.4, 2.0, -3.05));
+    G.add(plane(1.4, 0.7, glow(flagPH(), 1.0, { side: THREE.DoubleSide }), -4.4, 2.0, -3.05));
     // rally stage (ending)
     const rally = new THREE.Group(), rb = new Batch();
     rb.add(boxGeo(V(-5, 0, -11), V(5, 1.1, -7.0)), flat("#3a5a8a"));
@@ -197,7 +199,7 @@ export class World {
     const pc = ["#d42a2f", "#f2c33c", "#1f4fa8", "#fbf8ef"].map((c) => new THREE.Color(c));
     for (let i = 0; i < 40; i++) { const u = i / 39, x = -4.9 + 9.8 * u; bunt.setMatrixAt(i, M4(x, 5.1 - 0.5 * Math.sin(Math.PI * u), -10.8)); bunt.setColorAt(i, pc[i % 4]); }
     rally.add(bunt);
-    rally.add(plane(5.2, 2.6, lam("flagPHr", () => ({ map: flagPH(), side: THREE.DoubleSide })), 0, 3.0, -10.95));
+    rally.add(plane(5.2, 2.6, glow(flagPH(), 1.0, { side: THREE.DoubleSide }), 0, 3.0, -10.95));
     G.add(rally); d.rally = rally;
   }
 
@@ -256,7 +258,7 @@ export class World {
   // ======================= THEATER =======================
   private theater(G: THREE.Group, d: Partial<Dyn>) {
     const b = new Batch(), [ox, , oz] = THE;
-    const wall = flat("#5a2a3a"), floor = flat("#3a2a30");
+    const wall = flat("#2e1620"), floor = flat("#22181e");
     ground(b, ox - 7, ox + 7, oz - 10, oz + 10, floor, 2);
     b.add(quad(V(ox - 7, 0, oz + 10), V(ox - 7, 0, oz - 10), V(ox - 7, 7, oz - 10), V(ox - 7, 7, oz + 10), 1, 1), wall); // left wall, facing +x
     b.add(quad(V(ox + 7, 0, oz - 10), V(ox + 7, 0, oz + 10), V(ox + 7, 7, oz + 10), V(ox + 7, 7, oz - 10), 1, 1), wall);
@@ -285,7 +287,7 @@ export class World {
     d.screen = plane(8.2, 4.6, d.screenMat, ox, 3.6, oz - 9.88);
     d.screen.layers.set(NOINK); G.add(d.screen);
     // projector beam: a soft additive wedge from the booth window to the screen
-    const bm = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: beamTex(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(0.5, 0.55, 0.7), side: THREE.DoubleSide, fog: false }));
+    const bm = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: beamTex(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, color: new THREE.Color(0.9, 0.95, 1.1), side: THREE.DoubleSide, fog: false }));
     bm.layers.set(NOINK); G.add(bm); d.beam = bm;
   }
 
@@ -318,16 +320,16 @@ export class World {
     for (const [x, z] of [[-30, 20], [30, 24], [-12, 40], [14, 44]]) prop(b, kit, "tree-high-round", ox + x, 0, oz + z, 9);
     b.build(G);
     // film-can stacks (instanced; counts set per frame), flags on top
-    const canG = new THREE.CylinderGeometry(0.46, 0.46, CAN_H - 0.02, 20);
+    const canG = new THREE.CylinderGeometry(0.56, 0.56, CAN_H - 0.025, 28);
     const canM = [lam("canSide", () => ({ map: canSide() })), lam("canTop", () => ({ map: canTop() })), lam("canTop", () => ({ map: canTop() }))];
     d.cansPH = new THREE.InstancedMesh(canG, canM, 40); d.cansJP = new THREE.InstancedMesh(canG, canM, 60);
     for (const im of [d.cansPH, d.cansJP]) { im.castShadow = true; im.receiveShadow = true; im.frustumCulled = false; G.add(im); }
     const jp = new THREE.Group();
-    jp.add(plane(1.2, 0.8, lam("flagJPm", () => ({ map: flagJP(), side: THREE.DoubleSide })), 0.6, 0, 0));
+    jp.add(plane(1.2, 0.8, glow(flagJP(), 1.0, { side: THREE.DoubleSide }), 0.6, 0, 0));
     jp.add(new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.4), flat("#2b2f3a")).translateY(-0.3));
     G.add(jp); d.jpGroup = jp;
     const ph = new THREE.Group(); ph.name = "phFlag";
-    ph.add(plane(1.2, 0.6, lam("flagPHm", () => ({ map: flagPH(), side: THREE.DoubleSide })), 0.6, 0.1, 0));
+    ph.add(plane(1.2, 0.6, glow(flagPH(), 1.0, { side: THREE.DoubleSide }), 0.6, 0.1, 0));
     ph.add(new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.4), flat("#2b2f3a")).translateY(-0.3));
     G.add(ph);
   }
@@ -406,7 +408,7 @@ export class World {
     for (const s of [-1, 1]) for (const k of [0, 1]) b.add(boxGeo(V(ox + s * (3.2 + k * 3.3) - 0.28, 0, oz - 6.1), V(ox + s * (3.2 + k * 3.3) + 0.28, 10, oz - 5.7)), flat("#f9f5ec")); // pilasters
     for (const [x, z] of [[-14, -2], [14, -2], [-14, 10], [14, 10], [-8, 22], [8, 22]]) prop(b, kit, "tree-high-round", ox + x, 0, oz + z, 9);
     b.build(G);
-    for (const s of [-1, 1]) G.add(plane(1.6, 0.8, lam("flagPHp", () => ({ map: flagPH(), side: THREE.DoubleSide })), ox + s * 1.5, 7.1, oz - 5.6));
+    for (const s of [-1, 1]) G.add(plane(1.6, 0.8, glow(flagPH(), 1.0, { side: THREE.DoubleSide }), ox + s * 1.5, 7.1, oz - 5.6));
   }
 
   // ======================= OFFICE =======================
@@ -438,7 +440,7 @@ export class World {
     // flag on a pole in the corner
     fb.add(new THREE.CylinderGeometry(0.03, 0.03, 2.6).translate(0, 1.3, 0), flat("#c9a24a"), M4(ox - 3.6, 0, oz - 2.4));
     fb.build(G);
-    G.add(plane(1.1, 0.55, lam("flagPHo", () => ({ map: flagPH(), side: THREE.DoubleSide })), ox - 3.05, 2.25, oz - 2.4));
+    G.add(plane(1.1, 0.55, glow(flagPH(), 1.0, { side: THREE.DoubleSide }), ox - 3.05, 2.25, oz - 2.4));
   }
 
   // ---------------- per frame ----------------
