@@ -4,3 +4,4 @@ remotion/npm.log
 *.mp4
 shorts/pelikula/audio/__pycache__/
 shorts/pelikula/audio/stem_*.wav
+remotion/public/
