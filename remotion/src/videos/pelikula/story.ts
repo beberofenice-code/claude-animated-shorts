@@ -29,8 +29,8 @@ export type ShotDef = { id: number; a: number; b: number; light: Light; set: Set
 export const SHOTS: ShotDef[] = [
   { id: 1, a: 0, b: 98, light: "day", set: "plaza", beat: "hook" },
   { id: 2, a: 98, b: 190, light: "day", set: "plaza", beat: "hero", sunAz: 140 },
-  { id: 3, a: 190, b: 299, light: "golden", set: "escolta", beat: "street", sunAz: 35, sunEl: 24 },
-  { id: 4, a: 299, b: 400, light: "golden", set: "escolta", beat: "queue1897", sunAz: 110, sunEl: 26 },
+  { id: 3, a: 190, b: 299, light: "golden", set: "escolta", beat: "street", sunAz: 40, sunEl: 40 },
+  { id: 4, a: 299, b: 400, light: "golden", set: "escolta", beat: "queue1897", sunAz: -115, sunEl: 44 },
   { id: 5, a: 400, b: 489, light: "dark", set: "theater", beat: "screen1897", era: "old" },
   { id: 6, a: 489, b: 667, light: "day", set: "studio", beat: "director" },
   { id: 7, a: 667, b: 751, light: "day", set: "studio", beat: "japan" },
