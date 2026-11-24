@@ -351,7 +351,7 @@ const FAM: [Outfit, string, number][] = [[LOLO, "lolo", 1], [LOLA, "lola", 1], [
 const table = (cam: CamInfo, t: number, out: Stage, beat: "noche" | "handaan" | "why") => {
   const [ox, , oz] = HOME;
   // seats along both long sides of the table
-  const seats: [number, number][] = [[-1.8, 0.95], [-0.6, 0.95], [0.6, 0.95], [1.8, 0.95], [-1.2, -0.95], [0, -0.95], [1.2, -0.95]];
+  const seats: [number, number][] = [[-1.25, -0.95], [-2.0, -0.95], [0.4, -0.95], [-0.45, -0.95], [1.2, -0.95], [1.95, -0.85], [2.6, -0.8]];
   FAM.forEach(([o, key, sc], i) => {
     const [x, z] = seats[i];
     let ex: Expr = "smile", pose: FrontOpts["pose"] = null, pk = 0, mode: FrontOpts["mode"] = "sit", tilt = 0, prop: FrontOpts["prop"] = null, y = 0.44;
@@ -359,7 +359,7 @@ const table = (cam: CamInfo, t: number, out: Stage, beat: "noche" | "handaan" | 
       ex = pick(["grin", "smile_closed", "laugh", "smile"], i); prop = i % 2 ? "plate" : null;
       if (on(t, W.pamilya)) { mode = "stand"; y = 0; pose = "cheer"; pk = q(smooth((t - W.pamilya + LEAD) * 3), 10); ex = "grin"; prop = null; }
     } else if (beat === "why") {
-      ex = i === 5 ? "amazed" : "smile"; mode = i === 5 ? "stand" : "sit"; y = i === 5 ? 0 : 0.44;
+      ex = i === 5 ? "amazed" : "smile";
     } else {
       ex = i % 2 ? "smile_closed" : "grin";
       if (on(t, W.pagtawa)) { ex = "laugh"; tilt = 5 * Math.sin(t * 10 + i); }

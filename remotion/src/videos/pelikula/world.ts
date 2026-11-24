@@ -362,10 +362,12 @@ export class World {
     for (const zz of [-2.5, 0, 2.5]) for (let i = 0; i < 40; i++) { const u = i / 39; bunt.setMatrixAt(n, new THREE.Matrix4().makeRotationY(Math.PI / 2 * 0).setPosition(ox - 6.6 + 13.2 * u, 3.8 - 0.7 * Math.sin(Math.PI * u), oz + zz)); bunt.setColorAt(n, bc[n % 6]); n++; }
     han.add(bunt);
     const tvb = new Batch();
-    tvb.add(boxGeo(V(ox + 3.15, 0, oz - 0.4), V(ox + 3.75, 0.85, oz + 0.4)), flat("#7a4b2a"));
-    tvb.add(boxGeo(V(ox + 3.2, 0.85, oz - 0.45), V(ox + 3.7, 1.5, oz + 0.45)), flat("#3a3346"));
+    const tvm = M4(ox + 3.6, 0, oz + 1.6, -2.3);
+    tvb.add(boxGeo(V(-0.4, 0, -0.3), V(0.4, 0.85, 0.3)), flat("#7a4b2a"), tvm);
+    tvb.add(boxGeo(V(-0.45, 0.85, -0.25), V(0.45, 1.5, 0.25)), flat("#3a3346"), tvm);
     tvb.build(han);
-    d.tv = plane(0.78, 0.56, glow(tvVillain(), 1.25), ox + 3.18, 1.18, oz, -Math.PI / 2, true);
+    d.tv = plane(0.78, 0.56, glow(tvVillain(), 1.25), 0, 0, 0, 0, true);
+    d.tv.applyMatrix4(new THREE.Matrix4().makeTranslation(0, 1.18, 0.26).premultiply(tvm));
     han.add(d.tv);
     G.add(han); d.handaan = han;
     // noche buena dressing: ham, queso de bola, spaghetti, rice; parol in the window, string lights on the eaves
@@ -384,7 +386,7 @@ export class World {
     bb.add(boxGeo(V(ox - 1.8, 0.5, oz - 3.65), V(ox + 1.8, 1.05, oz - 3.58)), flat("#7a4b2a"));
     for (const x of [-1.7, 1.7]) bb.add(boxGeo(V(ox + x - 0.05, 0, oz - 3.6), V(ox + x + 0.05, 0.42, oz - 3.1)), flat("#5a3b2a"));
     bb.build(bench); G.add(bench); d.bench = bench;
-    d.phoneGlow = plane(1.0, 1.0, new THREE.MeshBasicMaterial({ map: bulbTex(), color: new THREE.Color(0.25, 0.4, 0.6), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }), ox, 1.2, oz - 3.0, 0, true);
+    d.phoneGlow = plane(1.0, 1.0, new THREE.MeshBasicMaterial({ map: bulbTex(), color: new THREE.Color(0.14, 0.24, 0.38), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }), ox, 1.2, oz - 3.0, 0, true);
     G.add(d.phoneGlow);
   }
 
