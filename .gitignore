@@ -1,0 +1,6 @@
+.remotion-tmp/
+studio/out/
+ghost-short/voice/*.mp3
+ghost-short/voice/rawA.wav
+ghost-short/voice/tightA.wav
+ghost-short/audio/_cache/
