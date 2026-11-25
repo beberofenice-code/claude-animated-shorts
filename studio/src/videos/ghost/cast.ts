@@ -287,7 +287,7 @@ const fxAlarm = (p: Pen, u: number) => {
   }
   p.ell(250, 250, 34, 34, "#f4f1ea", 7); p.ell(250, 250, 14, 14, "#e0443c", 0);
 };
-const fxDrop = (p: Pen) => { p.poly([[60, 10], [92, 70], [60, 110], [28, 70]], "#9fd3ef", 7); p.ell(52, 62, 8, 14, "#e8f6ff", 0); };
+const fxDrop = (p: Pen) => { const pts: [number, number][] = [[60, 6]]; for (let i = 0; i <= 16; i++) { const a = Math.PI * (-0.15 + 1.3 * i / 16); pts.push([60 + 30 * Math.cos(a), 78 + 30 * Math.sin(a)]); } p.poly(pts, "#9fd3ef", 7); p.ell(50, 74, 7, 12, "#e8f6ff", 0); };
 const fxFray = (p: Pen) => {
   for (let i = 0; i < 9; i++) {
     const a = rad(-60 + i * 15), L = 70 + 30 * (i % 3);
@@ -383,9 +383,9 @@ export const stage = (id: number, t: number, cam: CamInfo): Stage => {
     case 16: {
       const spark = at(t, SPARK_T);
       put(cam, out, { who: CAPT, at: mc([-0.2, DECK, 4.1]), fo: { expr: spark ? "shock" : at(t, 40.14) ? "nervous" : "neutral", prop: spark ? null : "sniff", look: spark ? 0 : 1 } }, t);
-      put(cam, out, { who: MRS, at: mc([-1.05, DECK, 5.0]), fo: { expr: spark ? "shock" : "neutral", look: 1 } }, t);
+      put(cam, out, { who: MRS, at: mc([-0.8, DECK, 3.7]), fo: { expr: spark ? "shock" : "neutral", look: 1 } }, t);
       put(cam, out, { who: SOPH, at: mc([0.55, DECK, 3.5]), fo: { expr: spark ? "shock" : "smile", look: 1 }, scale: 0.58 }, t);
-      fumes(out, t, mc([0, DECK + 0.6, 5.7]), 7, 1.2, 2.2, [0.35, 0, 0.1], 1.0, 0.75);
+      fumes(out, t, mc([-0.1, DECK + 0.6, 5.4]), 10, 1.4, 2.4, [-0.25, 0, -0.18], 1.2, 0.95);
       burstAt(out, t, SPARK_T, mc([0.9, DECK + 1.2, 5.6]), 0.55, "#ffd25a", 0.35);
       break;
     }
@@ -393,7 +393,9 @@ export const stage = (id: number, t: number, cam: CamInfo): Stage => {
       boatPeople(id, t, cam, out);
       if (id === 21) { // the snap at the middle of the towline
         const st = mcAt(id, SNAP_T, STERN), bw = boatAt(id, SNAP_T, [0, 0.72, 2.65]);
-        burstAt(out, t, SNAP_T, [(st[0] + bw[0]) / 2, (st[1] + bw[1]) / 2 - 0.4, (st[2] + bw[2]) / 2], 1.4, "#fff3b0", 0.45);
+        const mid: V3 = [(st[0] + bw[0]) / 2, (st[1] + bw[1]) / 2 - 0.18, (st[2] + bw[2]) / 2];
+        burstAt(out, t, SNAP_T, mid, 0.8, "#fff3b0", 0.3);
+        if (t >= SNAP_T) { const k = smooth((t - SNAP_T) / 1.6); pushFx(out, "fray", 300, fxFray, [mid[0], mid[1] - 1.2 * k, mid[2] - 1.5 * k], 0.45, 0.45); pushFx(out, "fray", 300, fxFray, [mid[0], mid[1] - 1.0 * k, mid[2] + 1.5 * k], 0.45, 0.45, { rot: Math.PI }); }
       }
       break;
     }
@@ -409,7 +411,7 @@ export const stage = (id: number, t: number, cam: CamInfo): Stage => {
         if (i % 2 === 0 && t > SLAM_T) continue; // the door is shut
         pushFx(out, `smoke${al}`, 300, (p) => fxSmoke(p, al), H2([src[0] + 0.6 * u, src[1] + 1.6 * u, src[2] + 0.4 * u]), sz, sz, { soft: true });
       }
-      if (t > 48.15) { const u = q((t * 1.6) % 1, 20); pushFx(out, `alarm${u}`, 500, (p) => fxAlarm(p, u), H2([2.9, 4.4, 3.75]), 1.3, 1.3); }
+      if (t > 48.15) { const u = q((t * 1.6) % 1, 20); pushFx(out, `alarm${u}`, 500, (p) => fxAlarm(p, u), H2([-1.5, 3.55, 3.9]), 1.7, 1.7); }
       if (t >= SLAM_T && t < SLAM_T + 0.5) { const u = q((t - SLAM_T) / 0.5, 30); pushFx(out, `puff${u}`, 300, (p) => fxPuff(p, u), H2([0, 1.0, 3.9]), 2.4, 2.4, { soft: true }); }
       burstAt(out, t, SLAM_T, H2([0.55, 1.4, 3.85]), 1.2, "#fff3b0", 0.3);
       break;

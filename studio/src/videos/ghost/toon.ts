@@ -571,7 +571,8 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
     p.gradFill(sp, o.jacket, mul(o.jacket, SH_CLOTH), light);
     p.inkRing(sp, ow * 0.9, thick);
   } else {
-    p.gradFill(tp, o.jacket, mul(o.jacket, SH_CLOTH), light);
+    const bodyCol = o.dress && mode === "sit" ? o.dress : o.jacket;
+    p.gradFill(tp, bodyCol, mul(bodyCol, SH_CLOTH), light);
     p.clip(tp, () => {
       if (o.belt) {
         for (const s of [-1, 1]) p.band([[tcx - s * 0.75 * T.a, chin - 0.05 * HH], [tcx + s * 0.8 * T.a, torsoBot - 0.1 * HH]], o.belt!, 5.5 * u, 1.8 * u);

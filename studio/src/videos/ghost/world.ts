@@ -445,14 +445,14 @@ export class World {
     this.dg = makeShip("dg", "#6a2a26", "#3e2c22", "#efdcbc");
     R.add(this.mc.root, this.dg.root);
     this.boat = makeBoat(); R.add(this.boat);
-    const ropeM = lam("rope", () => ({ color: "#b48a56" }));
-    for (let i = 0; i < 2; i++) { const s = new Strand(40, 0.07, 0.07, ropeM, 2); this.ropes.push(s); R.add(s.mesh); }
+    const ropeM = lam("rope", () => ({ color: "#9a7448" }));
+    for (let i = 0; i < 2; i++) { const s = new Strand(40, 0.04, 0.04, ropeM, 2); this.ropes.push(s); R.add(s.mesh); }
 
     // ---- the cargo hold ----
     const hold = new THREE.Group(); hold.position.set(...HOLD);
     {
       const b = new Batch(), b2 = new Batch();
-      M.hplank = lam("holdPlanks", () => ({ map: rep(beamHD(), 1, 1) }));
+      M.hplank = lam("holdPlanks", () => ({ map: rep(beamHD(), 1, 1), color: "#ffe2bc" }));
       M.hfloor = lam("holdFloor", () => ({ map: planksHD() }));
       b.add(boxGeo(V(-4.2, -0.2, -10.5), V(4.2, 0, 10.5), 4), M.hfloor);
       for (const s of [-1, 1]) b.add(boxGeo(V(s < 0 ? -2.75 : 2.35, 0, -10.5), V(s < 0 ? -2.35 : 2.75, 3.6, 10.5), 1.4), M.hplank);
@@ -462,6 +462,7 @@ export class World {
       ceil(-4.2, 4.2, -10.5, -1.2); ceil(-4.2, -1.0, -1.2, 1.2); ceil(1.0, 4.2, -1.2, 1.2); ceil(-4.2, 4.2, 1.2, 6.0); ceil(-4.2, -0.8, 6.0, 7.2); ceil(0.8, 4.2, 6.0, 7.2); ceil(-4.2, 4.2, 7.2, 10.5);
       for (let z = -9.6; z <= 9.6; z += 1.6) if (Math.abs(z) > 1.4 && (z < 5.8 || z > 7.4)) b2.add(boxGeo(V(-2.4, 3.12, z - 0.14), V(2.4, 3.4, z + 0.14)), M.hplank);
       b.build(hold, false); b2.build(hold, true);
+      hold.children.forEach((c) => (c.userData.noRecv = true)); // walls/floor/ceiling: lit, not buried in the deck shadow
       // barrels (instanced): white-oak rows, the nine red-oak leakers, food crates and sacks
       const prof = Array.from({ length: 11 }, (_, i) => { const s = i / 10; return new THREE.Vector2(0.28 + 0.06 * Math.sin(Math.PI * s), s * 0.95); });
       const bg = new THREE.LatheGeometry(prof, 18);
@@ -507,7 +508,7 @@ export class World {
       for (const [x, z, r] of [[-2.6, 4.6, 0.75], [2.7, 4.7, 0.8], [-3.6, 4.4, 0.6], [3.8, 4.5, 0.55], [-7.5, 5.5, 1.1], [7.2, 5.8, 1.0]] as const) b.add(new THREE.SphereGeometry(r, 16, 12).scale(1, 0.85, 1).translate(x, r * 0.7, z), bush);
       for (let x = -5; x <= 5; x += 0.5) if (Math.abs(x) > 1.2) b.add(boxGeo(V(x - 0.05, 0, 11.9), V(x + 0.05, 0.9, 12.0)), lam("fence", () => ({ color: "#f1ead8" })));
       for (const y of [0.35, 0.75]) for (const s of [-1, 1]) b.add(boxGeo(V(s * 1.2, y, 11.95), V(s * 5.05, y + 0.08, 12.02)), lam("fence", () => ({})));
-      b.add(boxGeo(V(-0.66, 0, 3.49), V(0.66, 2.25, 3.52)), new THREE.MeshBasicMaterial({ color: "#1a1418" })); // doorway
+      b.add(boxGeo(V(-0.66, 0, 3.49), V(0.66, 2.25, 3.52)), new THREE.MeshBasicMaterial({ color: "#6b4a3c" })); // doorway: a lit hallway
       b.build(hs);
       const door = (this.door = new THREE.Group());
       const slab = new THREE.Mesh(boxGeo(V(0, 0, -0.04), V(1.3, 2.22, 0.04)), lam("doorM", () => ({ map: doorTex("house", "#b8483a") })));
@@ -569,7 +570,7 @@ export class World {
     this.model.root.add(this.modelBoat); this.modelBoat.position.set(0, DECK + 1.26, 1.3); this.modelBoat.scale.setScalar(0.9);
     R.add(st);
     this.sets = { hold, house: hs, study: st };
-    for (const g of Object.values(this.sets)) g.traverse((o) => { if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).receiveShadow = true; });
+    for (const g of Object.values(this.sets)) g.traverse((o) => { if ((o as THREE.Mesh).isMesh) (o as THREE.Mesh).receiveShadow = !o.userData.noRecv; });
   }
 
   /** camera-relative sun, frozen per shot: the shot's mean view direction turned by az toward screen right, lifted by el */

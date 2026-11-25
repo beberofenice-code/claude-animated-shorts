@@ -110,10 +110,10 @@ export const SHOTS: ShotDef[] = [
   { id: 21, a: 1640, b: 1668, light: "golden", place: "sea" },// the rope snaps
   { id: 22, a: 1668, b: 1710, light: "golden", place: "sea" },// the ship sails on without them
   { id: 23, a: 1710, b: 1745, light: "golden", place: "sea" },// never seen again
-  { id: 24, a: 1745, b: 1830, light: "golden", place: "study", sunAz: 150, sunEl: 22 }, // twelve years later, a young doctor
-  { id: 25, a: 1830, b: 1889, light: "golden", place: "study", sunAz: 150, sunEl: 22 }, // put the lifeboat back
-  { id: 26, a: 1889, b: 1962, light: "golden", place: "study", sunAz: 150, sunEl: 22 }, // got her name wrong / half the world
-  { id: 27, a: 1962, b: TOTAL, light: "golden", place: "study", sunAz: 150, sunEl: 22 }, // Arthur Conan Doyle
+  { id: 24, a: 1745, b: 1830, light: "day", place: "study", sunAz: 150, sunEl: 30 }, // twelve years later, a young doctor
+  { id: 25, a: 1830, b: 1889, light: "day", place: "study", sunAz: 150, sunEl: 30 }, // put the lifeboat back
+  { id: 26, a: 1889, b: 1962, light: "day", place: "study", sunAz: 150, sunEl: 30 }, // got her name wrong / half the world
+  { id: 27, a: 1962, b: TOTAL, light: "day", place: "study", sunAz: 150, sunEl: 30 }, // Arthur Conan Doyle
 ];
 /** crossfades (frames) at place/time changes; a white 4-frame flash after the hook */
 export const XFADE: Record<number, number> = { 3: 6, 4: 6, 10: 6, 12: 6, 14: 8, 16: 6, 18: 8, 19: 8, 20: 10, 23: 8, 24: 12 };
@@ -193,7 +193,7 @@ const S11a = (f: number) => dolly(H([-0.35, 1.55, -4.6]), H([0.7, 1.0, -1.2]), p
 const S12a = (f: number) => dolly([2.9, 4.3, -2.8], [0, 2.95, 1.3], pushK(f, 677, 0.0022, 0.006, 32), { fov: 40 });
 const S12b = (f: number) => dolly([0.9, 4.9, 5.2], [0, 3.4, -2.2], pushK(f, 739, 0.003), { fov: 44 });
 // 13 the three at the mainmast: Luckily (thumbs up) / Unluckily (closer, roll), then both ships from above
-const S13a = (f: number) => dolly([1.5, 4.0, 2.4], [0.7, 3.65, -2.6], pushK(f, 767, 0.0022), { fov: 40 });
+const S13a = (f: number) => dolly([1.9, 4.2, 4.2], [0.7, 3.6, -2.6], pushK(f, 767, 0.0022), { fov: 40 });
 const S13b = (f: number) => dolly([0.9, 3.95, 0.6], [0.6, 3.75, -2.6], pushK(f, 830, 0.002), { fov: 38, roll: 0.045 });
 const S13c = (f: number) => dolly([18, 44, -28], [-7, 0, 3], pushK(f, 893, 0.002), { fov: 46 });
 // 14 hold: the nine barrels, the knock, the drips
@@ -213,7 +213,7 @@ const S17c = (f: number) => dolly([-3.5, 7.5, bz(f) - 13], [0, 3.0, bz(f) + 14],
 const S18a = (f: number) => dolly(Ho([4.2, 1.8, 15.5]), Ho([0.2, 2.6, 3.5]), pushK(f, 1403, 0.002), { fov: 42 });
 const S18b = (f: number) => dolly(Ho([1.2, 1.55, 12.2]), Ho([0.1, 1.45, 7.0]), pushK(f, 1484, 0.0025, 0.007, 30), { fov: 40, roll: -0.04 });
 // 19 the frayed rope over the stern (found by the boarding party), low by the water
-const S19a = (f: number) => dolly([2.2, 0.9, -22.5], [0.3, 2.6, -15.5], pushK(f, 1526, 0.0025), { fov: 44 });
+const S19a = (f: number) => dolly([2.4, 3.1, -22.8], [0.3, 2.0, -16.0], pushK(f, 1526, 0.0025), { fov: 44 });
 // 20 golden: the sails fill (low, looking up into them)
 const S20a = (f: number) => { const z = mz(f); return dolly([-2.4, 3.3, z - 6.5], [0.5, 14, z + 4], pushK(f, 1593, 0.003), { fov: 52, roll: -0.05 }); };
 // 21 golden: side-on to the taut rope at its middle; the snap
