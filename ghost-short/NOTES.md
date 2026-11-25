@@ -26,3 +26,7 @@ Fix: `scripts/patch_frames.mjs` renders every frame as PNG with 4 separate brows
 ~90 min total, also faster than the concurrent render), then encode:
 `ffmpeg -framerate 30 -i out/ghost/frames/f%04d.png -i ../ghost-short/mix.wav -map 0:v -map 1:a -c:v libx264 -crf 16 -pix_fmt yuv420p -c:a aac -b:a 256k out/ghost/final.mp4`
 Always run short_qa.py and look at POPS: paired ~57-diff spikes = glitch frames.
+
+## Delivered (2026-11-25)
+`studio/out/ghost/final.mp4` (not in git): 1440x2560, 30 fps, 2064 frames, 68.8 s, -15.1 LUFS, peak -1.0 dBFS.
+Built from the PNG frames in `studio/out/ghost/frames`. short_qa: no black frames, unplanned whites, freezes or pops.
