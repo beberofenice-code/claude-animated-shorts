@@ -430,14 +430,14 @@ const nell = (id: number, t: number, cam: CamInfo, out: Stage) => {
     const fo: FrontOpts = { mode: "stand", expr, prop: ["pan", k], blink: lid, headTilt: dancing ? q(9 * Math.sin(t * Math.PI * 2.3), 2) : 0 };
     out.places.push(person(cam, NELL_WHO, x, D0 + hop, z, { side: false, mirror: false }, fo, {}, NELL_SCALE));
     blob(out, x, D0, z, NELL_SCALE, hop > 0.03 ? 0.6 : 1);
-    // the clang: a burst at the pan (left of her head, seen from the front)
-    panFx(t, [x - cam.right.x * 0.28, D0 + 1.12, z - cam.right.z * 0.28 - 0.05], out);
+    // the clang: a burst on the pan (over her chest), a little toward the lens
+    { const tx = cam.pos.x - x, tz = cam.pos.z - z, l = Math.hypot(tx, tz) || 1; panFx(t, [x + (tx / l) * 0.12, D0 + hop + 0.6, z + (tz / l) * 0.12], out); }
     return;
   }
   if (id === 13) {
     out.places.push(person(cam, NELL_WHO, NELL_B[0], D0, NELL_B[2], { side: false, mirror: false }, { mode: "stand", expr: "relief_open", prop: ["pan", 0], blink: lid }, {}, NELL_SCALE));
     blob(out, NELL_B[0], D0, NELL_B[2], NELL_SCALE);
-    const tomO = { ...TOM_OUTFIT, hat: null };
+    const tomO = { ...TOM_OUTFIT, hat: "hair", hair: "#3a2418", rifle: false };
     out.places.push(person(cam, { i: TOM_I, o: tomO, okey: "tombare" }, TOM_B[0], D0, TOM_B[2], { side: false, mirror: false }, { mode: "stand", expr: "relief", prop: "shako", blink: lidAt(t, TOM_I) }, {}));
     blob(out, TOM_B[0], D0, TOM_B[2]);
     return;

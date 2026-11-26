@@ -319,7 +319,7 @@ export class World {
     {
       const bb = new Batch(), [rx, , rz] = ROOM;
       const planks = lam("roomFloor", () => ({ map: rep(planksHD(), 3, 3) }));
-      const frame = lam("bedFrame", () => ({ color: "#8a5a3c" })), sheet = lam("bedSheet", () => ({ color: "#f1ead8" }));
+      const frame = lam("bedFrame", () => ({ color: "#8a5a3c" })), sheet = lam("bedSheet", () => ({ color: "#dccfb4" }));
       const quilt = lam("quiltHD", () => ({ map: ctex("quilt", 512, 512, (g) => {
         const cols = ["#5a8fc2", "#e0b04a", "#c25a5a", "#6aa24e", "#f1ead8", "#7b5ac9"];
         for (let i = 0; i < 6; i++) for (let j = 0; j < 6; j++) { g.fillStyle = cols[(i * 7 + j * 3) % 6]; g.fillRect(i * 85.33, j * 85.33, 86, 86); }
@@ -333,8 +333,8 @@ export class World {
       bb.add(boxGeo(V(rx - 0.55, BED_TOP - 0.12, rz - 0.98), V(rx + 0.55, BED_TOP, rz + 0.88)), sheet);
       bb.add(boxGeo(V(rx - 0.62, D0, rz - 1.1), V(rx + 0.62, BED_TOP + 0.55, rz - 1.0)), frame); // headboard
       bb.add(boxGeo(V(rx - 0.31, BED_TOP, rz - 0.92), V(rx + 0.31, BED_TOP + 0.012, rz - 0.47)), sheet); // flat pillow
-      bb.add(boxGeo(V(rx - 0.57, BED_TOP + 0.005, rz - 0.33), V(rx + 0.57, BED_TOP + 0.085, rz + 0.86)), quilt);
-      bb.add(boxGeo(V(rx - 0.575, BED_TOP + 0.01, rz - 0.36), V(rx + 0.575, BED_TOP + 0.095, rz - 0.27)), sheet); // folded edge
+      bb.add(boxGeo(V(rx - 0.57, BED_TOP + 0.005, rz - 0.22), V(rx + 0.57, BED_TOP + 0.085, rz + 0.86)), quilt);
+      bb.add(boxGeo(V(rx - 0.575, BED_TOP + 0.01, rz - 0.25), V(rx + 0.575, BED_TOP + 0.095, rz - 0.17)), sheet); // folded edge
       bb.add(boxGeo(V(rx + 0.85, D0, rz - 1.0), V(rx + 1.35, D0 + 0.55, rz - 0.5)), frame); // bedside stool
       bb.build(R);
     }

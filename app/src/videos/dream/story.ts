@@ -75,7 +75,7 @@ export const NELL_SCALE = 0.85;
 /** Nell at the near end of the bridge (shots 7-9) */
 export const NELL_Q: V3 = [1.25, D0, -29.6];
 /** Tom and Nell on the bank (shot 13) */
-export const TOM_B: V3 = [1.9, D0, -34.3], NELL_B: V3 = [1.05, D0, -34.5];
+export const TOM_B: V3 = [-0.7, D0, -34.6], NELL_B: V3 = [-1.55, D0, -34.8];
 export const SIGN_AT: V3 = [2.25, D0, -30.9];
 /** the run (shot 5): three pieces of the same street, each its own path (time is compressed by the cuts) */
 export const RUN: { a: number; b: number; z0: number; z1: number; x: number; ease?: boolean }[] = [
@@ -219,17 +219,17 @@ const S6b = (f: number) => { const F = Fz(6, f); return dolly([0.5, D0 + 0.36, F
 const NQ = NELL_Q;
 const S7a = (f: number) => dolly([NQ[0] - 0.9, D0 + 0.95, NQ[2] - 2.6], [NQ[0] - 0.05, D0 + 0.95, NQ[2]], pushK(f, 889, 0.003, 0.008, 20), { fov: 38, roll: 0.035 });
 const S7b = (f: number) => { const F = Fz(7, f); return dolly([0.3, D0 + 1.8, F - 4.7], [0, D0 + 1.55, F + 1.2], pushK(f, 925, 0.0025), { fov: 38 }); };
-const S7c = (f: number) => dolly([5.2, D0 + 1.5, NQ[2] - 3.2], [-0.5, D0 + 1.4, NQ[2] + 7], pushK(f, 974, 0.0025), { fov: 44, roll: -0.03 });
+const S7c = (f: number) => dolly([0.3, D0 + 0.55, NQ[2] - 4.2], [0.9, D0 + 1.5, -16], pushK(f, 974, 0.0025), { fov: 52, roll: -0.03 });
 // 8: the pan. MS (grab) -> CU on "pinalo" (kicks on every strike)
 const S8a = (f: number) => dolly([NQ[0] - 0.7, D0 + 1.0, NQ[2] - 3.4], [NQ[0] - 0.1, D0 + 0.85, NQ[2]], pushK(f, 1007, 0.0025), { fov: 38 });
 const S8b = (f: number) => dolly([NQ[0] - 0.35, D0 + 0.95, NQ[2] - 1.9], [NQ[0] - 0.05, D0 + 0.98, NQ[2]], pushK(f, 1049, 0.002), { fov: 36, roll: -0.04 });
 // 9: the front row laughing -> Nell dancing with the column behind -> side view, the step going sloppy
 const S9a = (f: number) => { const F = Fz(9, f); return dolly([-0.5, D0 + 1.7, F - 3.5], [0, D0 + 1.6, F + 0.6], pushK(f, 1109, 0.0025), { fov: 36, roll: 0.04 }); };
-const S9b = (f: number) => dolly([5.6, D0 + 1.35, NQ[2] - 2.0], [0.2, D0 + 1.1, NQ[2] + 4.5], pushK(f, 1147, 0.0025), { fov: 46 });
+const S9b = (f: number) => dolly([-1.2, D0 + 1.0, NQ[2] - 3.4], [1.0, D0 + 1.0, NQ[2] + 1.8], pushK(f, 1147, 0.0025), { fov: 46, roll: 0.03 });
 const S9c = (f: number) => { const F = Fz(9, f); return dolly([13, D0 + 2.4, F + 7], [0, D0 + 1.2, F + 7], pushK(f, 1195, 0.002)); };
 // 10: lower side view, out of step ("isa-isa") -> the chain going quiet
 const S10a = (f: number) => { const F = Fz(10, f); return dolly([9.5, D0 + 1.2, F + 5.5], [0, D0 + 0.95, F + 5.5], pushK(f, 1274, 0.0018), { fov: 38, roll: 0.03 }); };
-const S10b = (f: number) => { const F = Fz(10, f); return dolly([-5.4, D0 + 4.6, F - 2.0], [-2.7, D0 + 3.4, F + 2.5], pushK(f, 1367, 0.0025), { fov: 40, roll: -0.02 }); };
+const S10b = (f: number) => dolly([-5.4, D0 + 4.6, -14], [-2.7, D0 + 3.4, -9.5], pushK(f, 1367, 0.0025), { fov: 40, roll: -0.02 });
 // 11: golden sway wide; 12: the park swing
 const S11a = (f: number) => zoom([14, 10.5, -47], [-1, 7, -4], 40, pushK(f, 1404, 0.0016));
 const S12a = (f: number) => dolly([PARK[0] + 0.55, D0 + 1.5, PARK[2] - 8], [PARK[0] + 0.55, D0 + 1.75, PARK[2]], pushK(f, 1505, 0.001), { fov: 40 });
@@ -355,5 +355,5 @@ export const FOREGROUND: Fg[] = [
   // park swing: a bush in the bottom-right corner, below the kid's arc
   { a: 1513, b: 1733, kit: "plant_bushDetailed", pos: [69.65, D0, -79.4], s: 1.2, yaw: 0.4 },
   // Tom + Nell on the bank: a bush bottom-left
-  { a: 1733, b: 1778, kit: "plant_bushDetailed", pos: [-0.9, D0, -37.6], s: 0.9, yaw: 0.6 },
+  { a: 1733, b: 1778, kit: "plant_bushDetailed", pos: [-3.95, D0, -36.5], s: 0.9, yaw: 0.6 },
 ];

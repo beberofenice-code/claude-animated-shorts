@@ -528,11 +528,11 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
       const S = sh(1);
       arms.push({ pts: [S, [tcx + 1.05 * T.a + 4 * u, S[1] + 0.45 * HH], [tcx + 0.5 * T.a, S[1] + 0.4 * HH]], front: true });
     } else if (Array.isArray(prop) && prop[0] === "pan") {
-      // pan held up by the left hand beside the head, wooden spoon in the right: 0 raised .. 1 struck
+      // pan held across the chest by the left hand, wooden spoon raised in the right: 0 raised .. 1 struck
       const L = sh(-1), S = sh(1), k = clamp(prop[1], 0, 1);
-      arms[0] = { pts: [L, [tcx - 1.2 * T.a - 12 * u, L[1] - 0.12 * HH], [tcx - 0.95 * T.a - 4 * u, L[1] - 0.5 * HH]], front: true };
-      const E = lerp2([tcx + 1.15 * T.a + 12 * u, S[1] - 0.2 * HH], [tcx + 0.9 * T.a + 8 * u, S[1] - 0.1 * HH], k);
-      const Hd = lerp2([tcx + 1.2 * T.a + 16 * u, S[1] - 0.62 * HH], [tcx + 0.55 * T.a, S[1] - 0.42 * HH], k);
+      arms[0] = { pts: [L, [tcx - 1.15 * T.a - 6 * u, chin + 0.42 * HH], [tcx - 0.62 * T.a, chin + 0.52 * HH]], front: true };
+      const E = lerp2([tcx + 1.25 * T.a + 14 * u, S[1] - 0.05 * HH], [tcx + 1.2 * T.a + 8 * u, S[1] + 0.3 * HH], k);
+      const Hd = lerp2([tcx + 1.3 * T.a + 12 * u, S[1] - 0.48 * HH], [tcx + 0.62 * T.a, chin + 0.22 * HH], k);
       arms.push({ pts: [S, E, Hd], front: true });
     } else if (Array.isArray(prop)) {
       const S = sh(1), k = clamp(prop[1], 0, 1);
@@ -589,20 +589,19 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
       p.ell(hx, hy - 19 * u, 11 * u, 10 * u, "#f7c6d9", 2.2 * u);
       p.dot(hx, hy, 5.5 * u);
     } else if (Array.isArray(prop) && prop[0] === "pan") {
-      const k = clamp(prop[1], 0, 1);
-      if (a === arms[0]) { // the pan: dark iron disc, handle down to the hand
-        const cx = hx + 4 * u, cy = hy - 30 * u;
-        p.band([[hx, hy + 4 * u], [cx, cy + 20 * u]], "#2e2b30", 6 * u, 1.5 * u, "round");
-        p.ell(cx, cy, 25 * u, 23 * u, "#45424a", 2.6 * u);
-        p.ell(cx - 2 * u, cy - 2 * u, 17 * u, 15 * u, "#5d5963", 0);
-        p.arc(cx - 6 * u, cy - 6 * u, 10 * u, 8 * u, 200, 290, 2.2 * u, "#8e8a94");
+      const k = clamp(prop[1], 0, 1), PC: P2 = [tcx - 0.08 * T.a, chin + 0.36 * HH], PR = 0.62 * T.a;
+      if (a === arms[0]) { // the pan: dark iron disc over the chest, handle out to the left hand
+        p.band([[hx, hy], [PC[0] - 0.8 * PR, PC[1] + 0.25 * PR]], "#2e2b30", 7 * u, 1.6 * u, "round");
+        p.ell(PC[0], PC[1], PR, PR * 0.92, "#45424a", 2.8 * u);
+        p.ell(PC[0] + 2 * u, PC[1] + 2 * u, PR * 0.7, PR * 0.64, "#5d5963", 0);
+        p.arc(PC[0] - 0.2 * PR, PC[1] - 0.2 * PR, PR * 0.42, PR * 0.36, 200, 290, 2.4 * u, "#9a96a0");
         p.dot(hx, hy, 5.5 * u);
-      } else { // the wooden spoon, swinging toward the pan
-        const ang = rad(-60 - 50 * k);
-        const Rh = (pts: P2[]) => rotPts(pts, ang, hx, hy);
-        p.band(Rh([[hx, hy + 10 * u], [hx, hy - 40 * u]]), "#b07a46", 4 * u, 1.4 * u, "round");
-        const [sx, sy] = Rh([[hx, hy - 48 * u]])[0];
-        p.ell(sx, sy, 7 * u, 10 * u, "#c48c55", 1.8 * u, 0, 360, (ang * 180) / Math.PI);
+      } else { // the wooden spoon: points up over the shoulder, then down onto the pan
+        const a0 = 0.35, a1 = Math.atan2(PC[0] - hx, -(PC[1] - hy));
+        const ang = a0 + (a1 - a0) * k, L = 42 * u;
+        const tip: P2 = [hx + Math.sin(ang) * L, hy - Math.cos(ang) * L];
+        p.band([[hx - Math.sin(ang) * 6 * u, hy + Math.cos(ang) * 6 * u], tip], "#b07a46", 4 * u, 1.4 * u, "round");
+        p.ell(tip[0], tip[1], 7 * u, 10 * u, "#c48c55", 1.8 * u, 0, 360, (ang * 180) / Math.PI);
         p.dot(hx, hy, 5.5 * u);
       }
     } else if (Array.isArray(prop)) {
