@@ -208,7 +208,7 @@ const S4d = (f: number) => dolly([-2.35, D0 + 1.25, -38.9], [ANCHOR[0], ANCHOR[1
 const S4e = (f: number) => { const u = glide((f - 573) / 15); return { pos: [0.9, D0 + 2.2 + 0.3 * u, -41.2 - 0.4 * u] as V3, look: [-2.9 - 0.2 * u, ANCHOR[1] + 1.6 + 1.0 * u, -35 + 1.2 * u] as V3, fov: 38, roll: 0.04 }; };
 const S4f = (f: number) => dolly([7.5, 2.4, -25], [0, 2.0, -17.5], pushK(f, 588, 0.003), { fov: 44, roll: -0.04 });
 // 5: the run. toward the lens -> side track past the stalls -> high angle over the street to the mill -> to the quay
-const S5a = (f: number) => { const n = nellRun(f); return dolly([3.4, D0 + 1.05, -84.5], [n.x - 0.25, D0 + 0.85, n.z - 0.8], pushK(f, 608, 0.002), { fov: 40, roll: -0.03 }); };
+const S5a = (f: number) => { const n = nellRun(f); return dolly([2.6, D0 + 0.75, -86.0], [n.x - 0.2, D0 + 0.75, n.z - 0.6], pushK(f, 608, 0.002), { fov: 38, roll: -0.03 }); };
 const S5b = (f: number) => { const n = nellRun(f); return { pos: [4.3, D0 + 1.15, n.z + 1.4] as V3, look: [-0.6, D0 + 0.85, n.z + 0.4] as V3, fov: 42, roll: 0.03 }; };
 const S5c = (f: number) => dolly([12, D0 + 15, -44], [-12, D0 + 4, -70], pushK(f, 700, 0.0025), { fov: 46 });
 const S5d = (f: number) => dolly([8.5, D0 + 1.6, -45], [0.4, D0 + 2.2, -31], pushK(f, 730, 0.002), { fov: 46, roll: -0.03 });
@@ -219,7 +219,7 @@ const S6b = (f: number) => { const F = Fz(6, f); return dolly([0.5, D0 + 0.36, F
 const NQ = NELL_Q;
 const S7a = (f: number) => dolly([NQ[0] - 0.9, D0 + 0.95, NQ[2] - 2.6], [NQ[0] - 0.05, D0 + 0.95, NQ[2]], pushK(f, 889, 0.003, 0.008, 20), { fov: 38, roll: 0.035 });
 const S7b = (f: number) => { const F = Fz(7, f); return dolly([0.3, D0 + 1.8, F - 4.7], [0, D0 + 1.55, F + 1.2], pushK(f, 925, 0.0025), { fov: 38 }); };
-const S7c = (f: number) => dolly([0.3, D0 + 0.55, NQ[2] - 4.2], [1.6, D0 + 1.4, -16], pushK(f, 974, 0.0025), { fov: 52, roll: -0.03 });
+const S7c = (f: number) => dolly([0.55, D0 + 0.6, NQ[2] - 7.5], [1.5, D0 + 1.9, -14], pushK(f, 974, 0.0025), { fov: 32, roll: -0.03 });
 // 8: the pan. MS (grab) -> CU on "pinalo" (kicks on every strike)
 const S8a = (f: number) => dolly([NQ[0] - 0.7, D0 + 1.0, NQ[2] - 3.4], [NQ[0] - 0.1, D0 + 0.85, NQ[2]], pushK(f, 1007, 0.0025), { fov: 38 });
 const S8b = (f: number) => dolly([NQ[0] - 0.35, D0 + 0.95, NQ[2] - 1.9], [NQ[0] - 0.05, D0 + 0.98, NQ[2]], pushK(f, 1049, 0.002), { fov: 36, roll: -0.04 });
@@ -328,7 +328,7 @@ export const DOF: Dof[] = [
   { f: 1007, cInf: 12, focus: nellEyes }, // the pan MS
   { f: 1049, cInf: 15, focus: nellEyes }, // pan CU
   { f: 1109, cInf: 12, focus: eyes(9) }, // laughing faces
-  { f: 1147, cInf: 7, focus: nellEyes }, // Nell dancing
+  { f: 1147, cInf: 3, focus: nellEyes }, // Nell dancing (the laughing column behind stays readable)
   { f: 1195, cInf: 0 }, // side views
   { f: 1367, cInf: 0 }, // chain
   { f: 1412, cInf: 5 }, // golden sway

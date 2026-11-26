@@ -230,7 +230,7 @@ const exprMarch = (id: number, t: number, i: number, tau: number): { expr: Expr;
   const lau = i % 3 === 0, whi = i % 5 === 1, L = LEAD;
   switch (id) {
     case 1: return { expr: "shock", look: 0 };
-    case 4: return t < DREAM_SNAP_T - L ? { expr: lau ? "laugh" : whi ? "whistle" : "grin", look: 0 } : { expr: "shock", look: -1 };
+    case 4: return t < DREAM_SNAP_T - L ? { expr: i % 2 ? "whistle" : "smile", look: 0 } : { expr: "shock", look: -1 }; // whistling, eyes open (the real laugh later is the change)
     case 3: return { expr: i === TOM_I ? "grin" : i % 4 === 3 ? "smile_closed" : i % 2 ? "neutral" : "stern", look: 0 };
     case 6: return { expr: i % 3 === 0 ? "grin" : i % 2 ? "neutral" : "stern", look: 0 };
     case 7: return { expr: t < W.shout - L ? (lau ? "grin" : "neutral") : i % 4 === 0 ? "grin" : "neutral", look: 0 };

@@ -591,10 +591,11 @@ export const bodyFront = (p: Pen, o: Outfit, opts: FrontOpts) => {
     } else if (Array.isArray(prop) && prop[0] === "pan") {
       const k = clamp(prop[1], 0, 1), PC: P2 = [tcx - 0.08 * T.a, chin + 0.36 * HH], PR = 0.62 * T.a;
       if (a === arms[0]) { // the pan: dark iron disc over the chest, handle out to the left hand
-        p.band([[hx, hy], [PC[0] - 0.8 * PR, PC[1] + 0.25 * PR]], "#2e2b30", 7 * u, 1.6 * u, "round");
-        p.ell(PC[0], PC[1], PR, PR * 0.92, "#45424a", 2.8 * u);
-        p.ell(PC[0] + 2 * u, PC[1] + 2 * u, PR * 0.7, PR * 0.64, "#5d5963", 0);
-        p.arc(PC[0] - 0.2 * PR, PC[1] - 0.2 * PR, PR * 0.42, PR * 0.36, 200, 290, 2.4 * u, "#9a96a0");
+        // frying pan in 3/4: long handle out to the hand, bright steel rim, dark cooking face, one highlight
+        p.band([[hx - 6 * u, hy + 2 * u], [PC[0] - 0.85 * PR, PC[1] + 0.2 * PR]], "#5a3a24", 8 * u, 1.6 * u, "round");
+        p.ell(PC[0], PC[1], PR * 1.08, PR * 0.78, "#9aa0aa", 2.8 * u);
+        p.ell(PC[0] + 1.5 * u, PC[1] + 2 * u, PR * 0.84, PR * 0.58, "#3b3a42", 1.2 * u);
+        p.arc(PC[0] - 0.25 * PR, PC[1] - 0.12 * PR, PR * 0.5, PR * 0.32, 200, 285, 2.6 * u, "#c9ced6");
         p.dot(hx, hy, 5.5 * u);
       } else { // the wooden spoon: points up over the shoulder, then down onto the pan
         const a0 = 0.35, a1 = Math.atan2(PC[0] - hx, -(PC[1] - hy));
