@@ -398,7 +398,8 @@ const nell = (id: number, t: number, cam: CamInfo, out: Stage) => {
     return;
   }
   if (id === 5) {
-    const r = nellRun(f), view = viewOf(cam, r.x, r.z, 0, 1);
+    // running she is always drawn side-on (the front view hides the run under the dress)
+    const r = nellRun(f), view = { ...viewOf(cam, r.x, r.z, 0, 1), side: true };
     const ph = q(((t * 2.7) % 1 + 1) % 1, 24);
     const fo: FrontOpts = r.running ? { mode: "march", phase: ph, expr: "nervous", lift: 85, blink: lid } : { mode: "stand", expr: "shock", blink: lid };
     const so: SideOpts = r.running ? { mode: "march", phase: ph, expr: "nervous", stomp: 1.4, stride: view.fs, blink: lid } : { mode: "stand", expr: "shock", blink: lid };

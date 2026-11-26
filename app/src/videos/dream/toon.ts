@@ -730,8 +730,10 @@ export const bodySide = (p: Pen, o: Outfit, opts: SideOpts) => {
   } else if (rifle) { near = [S, [S[0] - 4 * u, S[1] + 0.42 * HH], B0]; far = mode === "march" ? swingArm(rad(30) * nearFwd) : swingArm(0); }
   else { near = swingArm(rad(-30) * nearFwd); far = mode === "march" ? swingArm(rad(30) * nearFwd) : null; }
   if (far) { p.stroke(curve(far[0], far[1], far[2]), 5.2 * u, farArm); p.dot(far[2][0], far[2][1], 5.5 * u); }
-  p.gradFill(tp, o.jacket, mul(o.jacket, SH_CLOTH), light);
+  // a dress reads as the dress colour with the blouse on top (same as the front view)
+  p.gradFill(tp, o.dress ?? o.jacket, mul(o.dress ?? o.jacket, SH_CLOTH), light);
   p.clip(tp, () => {
+    if (o.dress) p.band([[tcx - 1.6 * T.a, chin + 0.1 * HH], [tcx + 1.6 * T.a, chin + 0.1 * HH]], o.jacket, 0.34 * HH, 0);
     if (o.belt) p.band([[tcx - 0.65 * T.a, chin - 0.05 * HH], [tcx + 0.75 * T.a, torsoBot - 0.1 * HH]], o.belt!, 5.5 * u, 1.8 * u);
     if (o.sash) p.band([[tcx - 1.3 * T.a, torsoBot - 0.32 * HH], [tcx + 1.3 * T.a, torsoBot - 0.32 * HH]], o.sash, 0.13 * HH, 1.8 * u);
     if (!o.dress) for (let i = 0; i < 3; i++) { const y = chin + 0.16 * HH + i * 0.24 * HH; p.dot(tcx + 0.8 * T.a, y, 3 * u, INK); p.dot(tcx + 0.8 * T.a, y, 2.2 * u, o.buttons ?? shade(o.jacket, 0.7)); }

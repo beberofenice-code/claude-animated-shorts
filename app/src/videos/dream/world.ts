@@ -332,7 +332,7 @@ export class World {
       bb.add(boxGeo(V(rx - 0.58, D0, rz - 1.02), V(rx + 0.58, BED_TOP - 0.12, rz + 0.92)), frame);
       bb.add(boxGeo(V(rx - 0.55, BED_TOP - 0.12, rz - 0.98), V(rx + 0.55, BED_TOP, rz + 0.88)), sheet);
       bb.add(boxGeo(V(rx - 0.62, D0, rz - 1.1), V(rx + 0.62, BED_TOP + 0.55, rz - 1.0)), frame); // headboard
-      bb.add(boxGeo(V(rx - 0.31, BED_TOP, rz - 0.92), V(rx + 0.31, BED_TOP + 0.012, rz - 0.47)), sheet); // flat pillow
+      bb.add(boxGeo(V(rx - 0.34, BED_TOP, rz - 0.97), V(rx + 0.34, BED_TOP + 0.012, rz - 0.2)), sheet); // flat pillow, its edges clear of the face
       bb.add(boxGeo(V(rx - 0.57, BED_TOP + 0.005, rz - 0.22), V(rx + 0.57, BED_TOP + 0.085, rz + 0.86)), quilt);
       bb.add(boxGeo(V(rx - 0.575, BED_TOP + 0.01, rz - 0.25), V(rx + 0.575, BED_TOP + 0.095, rz - 0.17)), sheet); // folded edge
       bb.add(boxGeo(V(rx + 0.85, D0, rz - 1.0), V(rx + 1.35, D0 + 0.55, rz - 0.5)), frame); // bedside stool
